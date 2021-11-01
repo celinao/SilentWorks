@@ -7,3 +7,5 @@ Tony Tu - ttu4@wisc.edu
 Celina Ough - ough@wisc.edu
 
 Wonder Zhu - hzhu254@wisc.edu
+
+Stephen Paoli - smpaoli@wisc.edu
