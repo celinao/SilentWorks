@@ -3,3 +3,4 @@ Whenever a student gets a notification or phone call during a meeting or lecture
 
 ### Devlopers:
 Tony Tu - ttu4@wisc.edu
+Celina Ough - ough@wisc.edu
