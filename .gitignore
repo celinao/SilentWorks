@@ -12,3 +12,7 @@ local.properties
 *.tfvars
 .idea/
 *.zip
+.idea/misc.xml
+.idea/vcs.xml
+.idea/gradle.xml
+.idea/compiler.xml
