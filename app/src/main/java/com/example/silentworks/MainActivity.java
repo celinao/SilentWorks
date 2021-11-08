@@ -2,9 +2,13 @@ package com.example.silentworks;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends OptionsMenu {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -12,5 +16,7 @@ public class MainActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_main);
         setContentView(R.layout.activity_calendar);
     }
+
+
 }
 

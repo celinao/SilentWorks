@@ -35,6 +35,7 @@
                 android:layout_height="100dp">
             </TextView>
 
+
             <TextView
                 android:background="#FFFFFF"
                 android:text="Scheduled Activity 2\n1:00-2:00pm"
