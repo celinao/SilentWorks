@@ -8,21 +8,22 @@
 
   <TextView
       android:id="@+id/settingsTitle"
-      android:layout_width="152dp"
-      android:layout_height="46dp"
-      android:layout_marginTop="25dp"
       android:text="Settings"
       android:textColor="@color/purple_700"
-      android:textSize="40dp"
-      app:layout_constraintHorizontal_bias="0.5"
+      android:textSize="35dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintVertical_bias=".025"/>
 
   <RadioGroup
       android:id="@+id/radioGroup"
-      android:layout_width="332dp"
-      android:layout_height="153dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:orientation="vertical"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
@@ -45,97 +46,91 @@
         android:text="Stop Muting Notifications" />
   </RadioGroup>
 
+<!--  See if you can make the timer only appear when stop all Notif or Stop Muting is clicked
+      then add a submit button. -->
   <TextView
       android:id="@+id/timerText"
-      android:layout_width="264dp"
-      android:layout_height="0dp"
-      android:layout_marginStart="16dp"
-      android:layout_marginTop="253dp"
-      android:layout_marginBottom="308dp"
       android:text="Stop/Start Notifications for:"
       android:textColor="@color/purple_700"
       android:textSize="20dp"
-      app:layout_constraintBottom_toTopOf="@+id/button"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+      android:layout_margin="20dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      />
 
   <NumberPicker
       android:id="@+id/TimerHour"
       android:layout_width="0dp"
-      android:layout_height="107dp"
-      android:layout_marginStart="104dp"
-      android:layout_marginTop="4dp"
-      android:layout_marginEnd="45dp"
-      app:layout_constraintEnd_toStartOf="@+id/textView2"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/timerText"></NumberPicker>
+      android:layout_height="100dp"
+      android:layout_marginLeft="40dp"
+      app:layout_constraintLeft_toLeftOf="@+id/timerText"
+      app:layout_constraintTop_toBottomOf="@+id/timerText"
+      ></NumberPicker>
+
 
   <NumberPicker
       android:id="@+id/TimerMin"
       android:layout_width="0dp"
       android:layout_height="100dp"
-      android:layout_marginLeft="36dp"
-      android:layout_marginTop="4dp"
-      android:layout_marginEnd="118dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/textView"
-      app:layout_constraintTop_toTopOf="@+id/TimerHour"></NumberPicker>
-
-
-  <CheckBox
-      android:id="@+id/checkBox"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="68dp"
-      android:layout_marginBottom="228dp"
-      android:text="Get Notifications via Email"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
-
-  <CheckBox
-      android:id="@+id/checkBox2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="3dp"
-      android:layout_marginTop="38dp"
-      android:text="Dark Mode"
-      app:layout_constraintStart_toStartOf="@+id/checkBox"
-      app:layout_constraintTop_toTopOf="@+id/checkBox" />
+      android:layout_marginRight="40dp"
+      app:layout_constraintRight_toRightOf="@+id/timerText"
+      app:layout_constraintTop_toBottomOf="@+id/timerText"
+      ></NumberPicker>
 
   <TextView
-      android:id="@+id/textView"
+      android:id="@+id/hourLabel"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="116dp"
-      android:layout_marginEnd="47dp"
       android:text="Hours"
       app:layout_constraintBottom_toBottomOf="@+id/TimerHour"
-      app:layout_constraintEnd_toStartOf="@+id/TimerMin"
-      app:layout_constraintStart_toStartOf="parent" />
+      app:layout_constraintStart_toStartOf="@+id/TimerHour"
+      app:layout_constraintEnd_toEndOf="@+id/TimerHour"
+      />
 
   <TextView
-      android:id="@+id/textView2"
+      android:id="@+id/minLabel"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="123dp"
-      android:layout_marginBottom="336dp"
       android:text="Minutes"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/TimerHour"
-      app:layout_constraintTop_toBottomOf="@+id/timerText"
-      app:layout_constraintVertical_bias="1.0" />
+      app:layout_constraintBottom_toBottomOf="@+id/TimerMin"
+      app:layout_constraintStart_toStartOf="@+id/TimerMin"
+      app:layout_constraintEnd_toEndOf="@+id/TimerMin"/>
+
+  <CheckBox
+      android:id="@+id/checkGetNotifications"
+      android:text="Get Notifications via Email"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintTop_toBottomOf="@+id/hourLabel"
+      android:layout_margin="10dp"
+      />
+
+  <CheckBox
+      android:id="@+id/checkGetDarkMode"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Dark Mode"
+      app:layout_constraintLeft_toLeftOf="@+id/checkGetNotifications"
+      app:layout_constraintTop_toBottomOf="@+id/checkGetNotifications" />
+
 
   <Button
-      android:id="@+id/button"
+      android:id="@+id/logOut"
+      android:text="Log Out"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="73dp"
-      android:layout_marginBottom="91dp"
-      android:text="Log Out"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="@+id/checkBox2"
-      app:layout_constraintTop_toBottomOf="@+id/timerText" />
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintTop_toBottomOf="@+id/checkGetDarkMode"
+      />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
