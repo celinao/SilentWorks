@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainPage extends AppCompatActivity {
+public class MainPage extends OptionsMenu {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

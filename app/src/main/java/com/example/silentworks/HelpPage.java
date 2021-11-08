@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class HelpPage extends AppCompatActivity {
+public class HelpPage extends OptionsMenu {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

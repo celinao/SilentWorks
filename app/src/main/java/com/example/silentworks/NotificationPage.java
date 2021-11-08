@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class NotificationPage extends AppCompatActivity {
+public class NotificationPage extends OptionsMenu {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
