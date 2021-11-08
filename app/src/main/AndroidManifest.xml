@@ -10,7 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SilentWorks">
         <activity
-            android:name=".MainActivity"
+            android:name=".HelpPage"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationPage"
+            android:exported="false" />
+        <activity
+            android:name=".MainPage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
