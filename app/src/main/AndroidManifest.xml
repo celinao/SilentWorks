@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
     package="com.example.silentworks">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -28,7 +29,6 @@
             android:exported="false" />
         <activity
             android:name=".MainPage"
-            android:name=".GoogleLogin"
             android:exported="true" />
         <activity
             android:name=".GoogleLogin"

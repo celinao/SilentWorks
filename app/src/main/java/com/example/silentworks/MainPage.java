@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 public class MainPage extends OptionsMenu {
@@ -16,9 +17,11 @@ public class MainPage extends OptionsMenu {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        setContentView(R.layout.activity_calendar);
     }
 
-
+    public void toGoogleLogin(View view){
+        Intent intent = new Intent(this, GoogleLogin.class);
+        startActivity(intent);
+    }
 }
 
