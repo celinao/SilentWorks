@@ -6,22 +6,71 @@
     android:layout_height="match_parent"
     tools:context=".CalendarActivity">
 
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="413dp"
-        android:layout_height="304dp"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="1dp" />
 
-    <HorizontalScrollView
-        android:layout_width="409dp"
-        android:layout_height="424dp"
-        tools:layout_editor_absoluteX="4dp"
-        tools:layout_editor_absoluteY="305dp">
+    <ScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
-    </HorizontalScrollView>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:background="#A4A4A4"
+                android:text="Scheduled Activity 1\n1:00-2:00pm"
+                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+            </TextView>
+
+            <TextView
+                android:background="#FFFFFF"
+                android:text="Scheduled Activity 2\n1:00-2:00pm"
+                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+
+            <TextView
+                android:background="#810081"
+                android:text="Scheduled Activity 3\n1:00-2:00pm"
+                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+            <TextView
+                android:background="#A4A4A4"
+                android:text="Scheduled Activity 4\n1:00-2:00pm"
+                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+
+            <TextView
+                android:background="#FFFFFF"
+                android:text="Scheduled Activity 5\n1:00-2:00pm"
+                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+
+            <TextView
+                android:background="#810081"
+                android:text="Scheduled Activity 6\n1:00-2:00pm"
+                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+
+
+
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

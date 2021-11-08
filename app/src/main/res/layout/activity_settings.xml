@@ -69,7 +69,7 @@
       android:layout_marginLeft="40dp"
       app:layout_constraintLeft_toLeftOf="@+id/timerText"
       app:layout_constraintTop_toBottomOf="@+id/timerText"
-      ></NumberPicker>
+      />
 
 
   <NumberPicker
@@ -79,7 +79,7 @@
       android:layout_marginRight="40dp"
       app:layout_constraintRight_toRightOf="@+id/timerText"
       app:layout_constraintTop_toBottomOf="@+id/timerText"
-      ></NumberPicker>
+      />
 
   <TextView
       android:id="@+id/hourLabel"
