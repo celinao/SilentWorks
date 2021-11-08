@@ -10,6 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SilentWorks">
         <activity
+            android:name=".settings"
+            android:exported="false"
+            android:icon="@drawable/ic_settings"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
