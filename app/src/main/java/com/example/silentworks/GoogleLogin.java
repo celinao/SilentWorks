@@ -14,7 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-public class GoogleLogin extends AppCompatActivity implements View.OnClickListener
+public class GoogleLogin extends OptionsMenu implements View.OnClickListener
 {
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "Login";
