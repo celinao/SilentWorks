@@ -28,7 +28,6 @@
             android:exported="false" />
         <activity
             android:name=".MainPage"
-            android:name=".GoogleLogin"
             android:exported="true" />
         <activity
             android:name=".GoogleLogin"
