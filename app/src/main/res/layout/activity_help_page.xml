@@ -6,6 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".HelpPage">
 
+    <TextView
+        android:id="@+id/textView"
+        android:text="Help"
+        android:textColor="@color/purple_700"
+        android:textSize="35dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias=".025" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:text="SilentWorks was created by four students at the University of Wisconsin - Madison for CS407: Foundations of Mobile Systems and Applications.
+\n\nIt was created with the goal of minimizing distractions for students and other working professionals so that they would be able to work and study without being disturbed by phone notifications.
+\n\nFeatures of SilentWorks: \n- Muting Notifications while in meetings
+\n- Muting Notifications for specified time periods \n- Recording notifications for review while silenced"
+        android:textColor="@color/purple_700"
+        android:padding="15dp"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias=".2" />
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
@@ -16,7 +47,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.872" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

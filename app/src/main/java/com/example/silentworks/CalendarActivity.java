@@ -11,9 +11,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.util.Log;
-
+import androidx.annotation.ColorRes;
+import android.graphics.Color;
+import android.view.View;
+import android.widget.CalendarView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import org.w3c.dom.Text;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
 import java.io.Serializable;
 
 public class CalendarActivity extends OptionsMenu implements Serializable {
@@ -32,7 +37,8 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
     private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
     private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-
+    private LinearLayout linearLayout;
+    private Event[] calendarEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +57,8 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
         String[] selectionArgs = new String[] {"hera@example.com", "com.example",
                 "hera@example.com"};
-// Submit the query and get a Cursor object back.
+        // Submit the query and get a Cursor object back.
         cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
-
         // Use the cursor to step through the returned records
         while (cur.moveToNext()) {
             long calID = 0;
@@ -69,6 +74,43 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
 
             Log.v("Calendar values", String.valueOf(calID) + String.valueOf(displayName) +
                     String.valueOf(accountName) + String.valueOf(ownerName));
+        }
+
+        // Sample Events
+        calendarEvents = new Event[]{
+                new Event("username", "date", "5", "30",
+                        "7", "00", "First Event", "description", "silence"),
+                new Event("username", "date", "6", "00",
+                    "7", "00", "Second Event", "description", "silence"),
+                new Event("username", "date", "9", "15",
+                    "10", "00", "Third Event", "description", "silence"),
+                new Event("username", "date", "startHour", "startMin",
+                    "endHour", "endMin", "title", "description", "silence")};
+
+        CalendarView calendarView = (CalendarView) findViewById(R.id.calendarView);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        TextView newView;
+
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                // write code to change the displayed events based on this.
+            }
+        });
+
+        // Adds each element in the CalendarEvent's array to the display
+        for(int idx = 0; idx < calendarEvents.length; idx++){
+            newView = new TextView(this);
+            newView.setText(calendarEvents[idx].getCalendarText());
+            newView.setTextSize(20);
+
+            // Switches background color so every other event
+            if(idx %2 == 0){
+                newView.setBackgroundResource(R.drawable.calendar_color1);
+            }else{
+                newView.setBackgroundResource(R.drawable.calendar_color2);
+            }
+            linearLayout.addView(newView);
         }
     }
 }

@@ -20,6 +20,7 @@ public class MainPage extends OptionsMenu implements Serializable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        setContentView(R.layout.activity_calendar);
+//        setContentView(R.layout.activity_settings);
     }
 
     public void toGoogleLogin(View view) {
