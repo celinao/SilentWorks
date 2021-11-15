@@ -29,6 +29,9 @@ public class OptionsMenu extends AppCompatActivity {
             case R.id.help:
                 startActivity(new Intent(this, HelpPage.class));
                 return true;
+            case R.id.main:
+                startActivity(new Intent(this, MainPage.class));
+                return true;
             case R.id.notifications:
                 startActivity(new Intent(this, NotificationPage.class));
                 return true;

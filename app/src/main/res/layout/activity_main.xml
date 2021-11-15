@@ -8,19 +8,15 @@
     android:foregroundTint="#FF0000"
     tools:context=".MainPage">
 
-    <TextView
-        android:id="@+id/mainTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:text="Welcome to SilentWorks"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+    <ImageView
+        android:id="@+id/SWLogoImage"
+        android:layout_width="347dp"
+        android:layout_height="176dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.328" />
+        app:srcCompat="@drawable/silentworks_long_logo_light" />
 
     <!--    <Button-->
     <!--        android:id="@+id/googleButton"-->
@@ -38,10 +34,14 @@
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginBottom="45dp"
-        app:layout_constraintBottom_toTopOf="@+id/outlookButton"
-        app:layout_constraintStart_toStartOf="@+id/outlookButton" />
+        android:onClick="toGoogleLogin"
+        android:text="Google Login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/SWLogoImage"
+        app:layout_constraintVertical_bias="0.21" />
 
     <Button
         android:id="@+id/outlookButton"
@@ -50,6 +50,9 @@
         android:layout_marginBottom="153dp"
         android:text="Outlook Login"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/googleButton"
+        app:layout_constraintVertical_bias="0.024" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
