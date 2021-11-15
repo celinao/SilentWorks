@@ -14,7 +14,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-public class GoogleLogin extends OptionsMenu implements View.OnClickListener
+import java.io.Serializable;
+
+public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Serializable
 {
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "Login";
@@ -31,7 +33,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestIdToken("407258174239-6na4pinej42ibpub70io685b6moqr4t2.apps.googleusercontent.com")
+                .requestIdToken("407258174239-57eol2lsmhcs5e15pj9ri3ivvhmls73h.apps.googleusercontent.com")
                 .build();
 
         mGoogleSignInClient = com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(this, gso);
@@ -46,6 +48,12 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(this);
         //updateUI(account);
+        Log.v("SUCCESS!!", String.valueOf(account));
+        if(account != null) {
+            Intent intent = new Intent(this, CalendarActivity.class);
+            intent.putExtra("account", account);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -82,6 +90,11 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener
 
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
+            Log.v("SUCCESS!!", String.valueOf(account));
+            Intent intent = new Intent(this, CalendarActivity.class);
+            intent.putExtra("account", account);
+            startActivity(intent);
+
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.

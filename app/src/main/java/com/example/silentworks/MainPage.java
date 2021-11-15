@@ -8,7 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainPage extends OptionsMenu {
+import java.io.Serializable;
+
+public class MainPage extends OptionsMenu implements Serializable {
     // remove Options Menu and replace with AppCompat once the log-in features work since there
     // shouldn't be a menu on this page.
 
