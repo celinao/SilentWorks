@@ -124,6 +124,7 @@
   <Button
       android:id="@+id/logOut"
       android:text="Log Out"
+      android:onClick="logOut"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:layout_constraintLeft_toLeftOf="parent"

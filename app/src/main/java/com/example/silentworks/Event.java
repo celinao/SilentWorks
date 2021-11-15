@@ -29,6 +29,10 @@ public class Event {
         }
     }
 
+    public String getCalendarText(){
+        return (title + "\n" + startHour + ":" + startMin + "-" + endHour + ":" + endMin);
+    }
+
     public String getUsername() {
         return username;
     }
