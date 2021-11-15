@@ -9,9 +9,10 @@ public class LoginStorage {
     private final String passwordKey = "password";
     private SharedPreferences sharedPreferences;
 
-    public LoginStorage (String username, String password, Context context) throws Exception {
+    public LoginStorage (Context context){
 
         sharedPreferences = context.getSharedPreferences("SilentWorksLogin", Context.MODE_PRIVATE);
+        /**
         if (sharedPreferences.getString(usernameKey, "").equals("") &&
                 sharedPreferences.getString(passwordKey, "").equals("")) {
             if (username != null && password != null) {
@@ -21,6 +22,7 @@ public class LoginStorage {
                 throw new Exception("Error");
             }
         }
+         */
 
     }
 
@@ -28,7 +30,7 @@ public class LoginStorage {
         return sharedPreferences.getString(usernameKey,"");
     }
 
-    public String getPasswordKey() {
+    public String getPassword() {
         return sharedPreferences.getString(passwordKey,"");
     }
 
