@@ -6,12 +6,18 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.util.Log;
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+
 import android.graphics.Color;
 import android.view.View;
 import android.widget.CalendarView;
@@ -23,13 +29,15 @@ import java.io.Serializable;
 
 public class CalendarActivity extends OptionsMenu implements Serializable {
     GoogleSignInAccount account;
+    private static final int PERMISSIONS_REQUEST_READ_AND_WRITE_CALENDAR = 12;
+    private static final int PERMISSIONS_REQUEST_WRITE_CALENDAR = 13;
     // Projection array. Creating indices for this array instead of doing
 // dynamic lookups improves performance.
     public static final String[] EVENT_PROJECTION = new String[] {
             CalendarContract.Calendars._ID,                           // 0
             CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
             CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT
+            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
     };
 
     // The indices for the projection array above.
@@ -48,33 +56,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         account = intent.getParcelableExtra("account");
         Log.v("from Calendar Activity", String.valueOf(account));
 
-        // Run query
-        Cursor cur = null;
-        ContentResolver cr = getContentResolver();
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
-                + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
-                + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
-        String[] selectionArgs = new String[] {"hera@example.com", "com.example",
-                "hera@example.com"};
-        // Submit the query and get a Cursor object back.
-        cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
-        // Use the cursor to step through the returned records
-        while (cur.moveToNext()) {
-            long calID = 0;
-            String displayName = null;
-            String accountName = null;
-            String ownerName = null;
-
-            // Get the field values
-            calID = cur.getLong(PROJECTION_ID_INDEX);
-            displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
-            accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
-            ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
-
-            Log.v("Calendar values", String.valueOf(calID) + String.valueOf(displayName) +
-                    String.valueOf(accountName) + String.valueOf(ownerName));
-        }
+        searchCalendarTable();
 
         // Sample Events
         calendarEvents = new Event[]{
@@ -111,6 +93,58 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 newView.setBackgroundResource(R.drawable.calendar_color2);
             }
             linearLayout.addView(newView);
+        }
+    }
+
+    private void searchCalendarTable() {
+        int permission = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.READ_CALENDAR);
+        int permissionTwo = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.WRITE_CALENDAR);
+        if(permission == PackageManager.PERMISSION_DENIED && permissionTwo == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR},
+                    PERMISSIONS_REQUEST_READ_AND_WRITE_CALENDAR);
+        } else {
+            // Run query
+            Cursor cur = null;
+            ContentResolver cr = getContentResolver();
+            Uri uri = CalendarContract.Calendars.CONTENT_URI;
+            String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
+                                    + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
+                                    + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+            String[] selectionArgs = new String[] {account.getEmail(), "com.gmail", account.getEmail()};
+            try {
+                // Submit the query and get a Cursor object back.
+                cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
+            } catch (Exception e) {
+                Log.e("Query failed", e.getLocalizedMessage());
+            }
+            // Use the cursor to step through the returned records
+            while (cur.moveToNext()) {
+                long calID = 0;
+                String displayName = null;
+                String accountName = null;
+                String ownerName = null;
+
+                // Get the field values
+                calID = cur.getLong(PROJECTION_ID_INDEX);
+                displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
+                accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
+                ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
+
+                Log.v("Calendar values", String.valueOf(calID) + String.valueOf(displayName) +
+                        String.valueOf(accountName) + String.valueOf(ownerName));
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            searchCalendarTable();
         }
     }
 }
