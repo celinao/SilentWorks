@@ -32,20 +32,20 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     // Projection array. Creating indices for this array instead of doing
 // dynamic lookups improves performance.
     public static final String[] CALENDAR_PROJECTION = new String[] {
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
+            CalendarContract.Calendars._ID,
+            CalendarContract.Calendars.ACCOUNT_NAME,
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
+            CalendarContract.Calendars.OWNER_ACCOUNT
     };
 
     public static final String[] EVENT_PROJECTION = new String[] {
-            CalendarContract.Events.TITLE,                           // 0
-            CalendarContract.Events.DESCRIPTION,                  // 1
-            CalendarContract.Events.DTSTART,         // 2
-            CalendarContract.Events.DTEND,           // 3
+            CalendarContract.Events.TITLE,
+            CalendarContract.Events.DESCRIPTION,
+            CalendarContract.Events.DTSTART,
+            CalendarContract.Events.DTEND,
     };
 
-    // The indices for the projection array above.
+    // The indices for the projection arrays above.
     private static final int PROJECTION_ID_INDEX = 0;
     private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
     private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
@@ -74,18 +74,6 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         });
 
         searchCalendarTable();
-
-//        // Sample Events
-//        calendarEvents = new Event[]{
-//                new Event("username", "date", "5", "30",
-//                        "7", "00", "First Event", "description", "silence"),
-//                new Event("username", "date", "6", "00",
-//                    "7", "00", "Second Event", "description", "silence"),
-//                new Event("username", "date", "9", "15",
-//                    "10", "00", "Third Event", "description", "silence"),
-//                new Event("username", "date", "startHour", "startMin",
-//                    "endHour", "endMin", "title", "description", "silence")};
-
     }
 
     private void searchCalendarTable() {
@@ -106,7 +94,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                                     + CalendarContract.Calendars.ACCOUNT_TYPE + " = ? ))";
             String[] selectionArgs = new String[] {account.getEmail(), "com.google"};
             try {
-                // Submit the query and get a Cursor object back.
+                // Submit the query and get a Cursor object back
                 cur = cr.query(uri, CALENDAR_PROJECTION, selection, selectionArgs, null);
             } catch (Exception e) {
                 Log.e("Query failed", e.getLocalizedMessage());
@@ -132,6 +120,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                         String.valueOf(accountName) + String.valueOf(ownerName));
             }
 
+            // Get new uri to query the events table
             Uri eventsUri = CalendarContract.Events.CONTENT_URI;
             cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
             while(cur.moveToNext()) {
@@ -151,9 +140,11 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 Log.v("Events", String.valueOf(title) + String.valueOf(description)
                         + String.valueOf(startTime) + String.valueOf(endTime));
 
+                // Format date for UI
                 SimpleDateFormat formatterHour = new SimpleDateFormat("HH");
                 SimpleDateFormat formatterMin = new SimpleDateFormat("mm");
 
+                // Create an event to be added to the ArrayList
                 Event tempEvent = new Event(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
                         formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
 
