@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -36,12 +37,6 @@
         <activity
             android:name=".MainPage"
             android:exported="true" />
-        <receiver android:name=".TextResponse"
-            android:exported="false">
-            <intent-filter android:priority="1000">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
         <activity
             android:name=".GoogleLogin"
             android:exported="true">
@@ -53,6 +48,16 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <receiver
+            android:name=".TextResponse"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.Trigger" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 
 public class TextResponse extends BroadcastReceiver {
@@ -17,6 +18,8 @@ public class TextResponse extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Toast.makeText(context, "Yee",
+                Toast.LENGTH_SHORT).show();
         Log.i("Recieved something", "yee");
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             Bundle bundle = intent.getExtras();
