@@ -24,7 +24,7 @@ public class OptionsMenu extends AppCompatActivity {
                 startActivity(new Intent(this, CalendarActivity.class));
                 return true;
             case R.id.settings:
-                startActivity(new Intent(this, settings.class));
+                startActivity(new Intent(this, SettingsPage.class));
                 return true;
             case R.id.help:
                 startActivity(new Intent(this, HelpPage.class));

@@ -11,7 +11,7 @@ import android.widget.NumberPicker;
 
 import java.util.Arrays;
 
-public class settings extends OptionsMenu{
+public class SettingsPage extends OptionsMenu{
 
     private NumberPicker hourPicker;
     private NumberPicker minPicker;
