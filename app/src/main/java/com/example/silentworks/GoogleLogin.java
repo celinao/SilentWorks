@@ -25,7 +25,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
 {
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "Login";
-    // Build a GoogleSignInClient with the options specified by gso.
+    // Build a GoogleSignInClient with the options specified by gso
     GoogleSignInClient mGoogleSignInClient;
 
     private AlertDialog enableNotificationListenerAlertDialog;
@@ -37,7 +37,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         setContentView(R.layout.activity_main);
 
         // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // profile
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestIdToken("407258174239-57eol2lsmhcs5e15pj9ri3ivvhmls73h.apps.googleusercontent.com")
@@ -57,10 +57,8 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
     protected void onStart() {
         super.onStart();
         // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
+        // the GoogleSignInAccount will be non-null
         GoogleSignInAccount account = com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(this);
-        //updateUI(account);
-        Log.v("SUCCESS!!", String.valueOf(account));
         if(account != null) {
             Intent intent = new Intent(this, CalendarActivity.class);
             intent.putExtra("account", account);
@@ -89,8 +87,6 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
             Task<GoogleSignInAccount> task = com.google.android.gms.auth.api.signin.GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
@@ -100,18 +96,14 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            // Signed in successfully, show authenticated UI.
-            //updateUI(account);
-            Log.v("SUCCESS!!", String.valueOf(account));
+            // Signed in successfully, show authenticated UI
             Intent intent = new Intent(this, CalendarActivity.class);
             intent.putExtra("account", account);
             startActivity(intent);
 
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            //updateUI(null);
         }
     }
 
