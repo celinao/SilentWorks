@@ -20,7 +20,6 @@ public class OptionsMenu extends AppCompatActivity {
     {
         switch (item.getItemId()) {
             case R.id.calendar:
-                Log.i("tag", "clicked calendar");
                 startActivity(new Intent(this, CalendarActivity.class));
                 return true;
             case R.id.settings:
