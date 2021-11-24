@@ -80,9 +80,42 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                     int eventYear = Integer.parseInt(calendarEvents.get(i).getDate().substring(24,28));
 
                     switch(eventMonth) {
+                        case "Jan":
+                            eventMonthAsInt = 0;
+                            break;
+                        case "Feb":
+                            eventMonthAsInt = 1;
+                            break;
+                        case "Mar":
+                            eventMonthAsInt = 2;
+                            break;
+                        case "Apr":
+                            eventMonthAsInt = 3;
+                            break;
+                        case "May":
+                            eventMonthAsInt = 4;
+                            break;
+                        case "Jun":
+                            eventMonthAsInt = 5;
+                            break;
+                        case "Jul":
+                            eventMonthAsInt = 6;
+                            break;
+                        case "Aug":
+                            eventMonthAsInt = 7;
+                            break;
+                        case "Sep":
+                            eventMonthAsInt = 8;
+                            break;
+                        case "Oct":
+                            eventMonthAsInt = 9;
+                            break;
                         case "Nov":
                             eventMonthAsInt = 10;
-                                    break;
+                            break;
+                        case "Dec":
+                            eventMonthAsInt = 11;
+                            break;
                     }
 
                     if(eventDay == dayOfMonth && eventMonthAsInt == month && eventYear == year) {
