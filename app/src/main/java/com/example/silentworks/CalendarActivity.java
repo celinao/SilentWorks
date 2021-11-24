@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,6 +71,25 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
                 // write code to change the displayed events based on this.
+                Log.v("date", "year: " + String.valueOf(year) + " " + "month: " + String.valueOf(month) + " " + "day: " + String.valueOf(dayOfMonth));
+                ArrayList<Event> dayEvents = new ArrayList<Event>();
+                for(int i = 0; i < calendarEvents.size(); i++) {
+                    int eventDay = Integer.parseInt(calendarEvents.get(i).getDate().substring(8,10));
+                    String eventMonth = calendarEvents.get(i).getDate().substring(4,7);
+                    int eventMonthAsInt = 100;
+                    int eventYear = Integer.parseInt(calendarEvents.get(i).getDate().substring(24,28));
+
+                    switch(eventMonth) {
+                        case "Nov":
+                            eventMonthAsInt = 10;
+                                    break;
+                    }
+
+                    if(eventDay == dayOfMonth && eventMonthAsInt == month && eventYear == year) {
+                        dayEvents.add(calendarEvents.get(i));
+                    }
+                }
+                displayCalendarEvents(dayEvents);
             }
         });
 
@@ -150,27 +170,32 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
 
                 calendarEvents.add(tempEvent);
             }
-            displayCalendarEvents();
+            //displayCalendarEvents(calendarEvents);
         }
     }
 
-    public void displayCalendarEvents() {
+    public void displayCalendarEvents(ArrayList<Event> events) {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
         TextView newView;
-
-        // Adds each element in the CalendarEvent's array to the display
-        for(int idx = 0; idx < calendarEvents.size(); idx++){
-            newView = new TextView(this);
-            newView.setText(calendarEvents.get(idx).getCalendarText());
-            newView.setTextSize(20);
-
-            // Switches background color so every other event
-            if(idx %2 == 0){
-                newView.setBackgroundResource(R.drawable.calendar_color1);
-            }else{
-                newView.setBackgroundResource(R.drawable.calendar_color2);
+        if(events.size() == 0) {
+            for(int i = 1; i < linearLayout.getChildCount(); i++) {
+                linearLayout.removeViewAt(i);
             }
-            linearLayout.addView(newView);
+        } else {
+            // Adds each element in the CalendarEvent's array to the display
+            for(int idx = 0; idx < events.size(); idx++){
+                newView = new TextView(this);
+                newView.setText(events.get(idx).getCalendarText());
+                newView.setTextSize(20);
+
+                // Switches background color so every other event
+                if(idx %2 == 0){
+                    newView.setBackgroundResource(R.drawable.calendar_color1);
+                }else{
+                    newView.setBackgroundResource(R.drawable.calendar_color2);
+                }
+                linearLayout.addView(newView);
+            }
         }
     }
 
