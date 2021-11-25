@@ -11,7 +11,7 @@ public class EventsStorage {
     SQLiteDatabase sqLiteDatabase;
 
     public EventsStorage(Context context) {
-        sqLiteDatabase = context.openOrCreateDatabase("SilentWorksEvents", Context.MODE_PRIVATE, null);
+        sqLiteDatabase = context.openOrCreateDatabase("SWE", Context.MODE_PRIVATE, null);
 
     }
 
@@ -66,7 +66,7 @@ public class EventsStorage {
                           String endMin, String title, String description, String silence) {
         createTable();
         sqLiteDatabase.execSQL(String.format("INSERT INTO events (username, date, startHour, startMin, endHour, endMin, title, description, silence) " +
-                        "VALUES ('%s', '%s', '%s', '%s','%s', '%s', '%s', '%s')",
+                        "VALUES ('%s', '%s', '%s', '%s','%s', '%s', '%s', '%s','%s')",
                 username, date, startHour, startMin, endHour, endMin, title, description, silence));
     }
 
@@ -77,11 +77,12 @@ public class EventsStorage {
                 silence, title, username));
     }
 
-    public void deleteEvent(String username, String title) {
+    public void deleteEvent(String username) {
         createTable();
-        sqLiteDatabase.execSQL(String.format("DELETE FROM events WHERE title = '%s' where title = '%s' and username = '%s'",
-                title, username));
+        sqLiteDatabase.execSQL(String.format("DELETE FROM events WHERE username = '%s'", username));
+        //sqLiteDatabase.delete("SWE", null, null);
     }
+
 
 
 }

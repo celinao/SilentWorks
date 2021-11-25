@@ -123,6 +123,13 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
             // Get new uri to query the events table
             Uri eventsUri = CalendarContract.Events.CONTENT_URI;
             cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
+
+            // Storing the login info to local and start SQLite
+            String username = account.getEmail();
+            LoginStorage loginStorage = new LoginStorage(getApplicationContext());
+            loginStorage.setUsername(username);
+            EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
+
             while(cur.moveToNext()) {
                 String title = null;
                 String description = null;
@@ -149,6 +156,11 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                         formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
 
                 calendarEvents.add(tempEvent);
+
+                // store the events into SQLite for off-line
+                eventsStorage.saveEvent(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
+                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
+
             }
             displayCalendarEvents();
         }
