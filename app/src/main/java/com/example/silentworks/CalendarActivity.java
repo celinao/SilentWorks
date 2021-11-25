@@ -13,6 +13,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import android.view.View;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,11 +23,13 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class CalendarActivity extends OptionsMenu implements Serializable {
     GoogleSignInAccount account;
     CalendarView calendarView;
+    ArrayList<View> viewList;
     private static final int PERMISSIONS_REQUEST_READ_AND_WRITE_CALENDAR = 12;
     private static final int PERMISSIONS_REQUEST_WRITE_CALENDAR = 13;
     private long calendarId = 3;
@@ -65,68 +68,87 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         Intent intent = getIntent();
         account = intent.getParcelableExtra("account");
         calendarEvents = new ArrayList<Event>();
+        viewList = new ArrayList<View>();
         calendarView = (CalendarView) findViewById(R.id.calendarView);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                // write code to change the displayed events based on this.
-                Log.v("date", "year: " + String.valueOf(year) + " " + "month: " + String.valueOf(month) + " " + "day: " + String.valueOf(dayOfMonth));
-                ArrayList<Event> dayEvents = new ArrayList<Event>();
-                for(int i = 0; i < calendarEvents.size(); i++) {
-                    int eventDay = Integer.parseInt(calendarEvents.get(i).getDate().substring(8,10));
-                    String eventMonth = calendarEvents.get(i).getDate().substring(4,7);
-                    int eventMonthAsInt = 100;
-                    int eventYear = Integer.parseInt(calendarEvents.get(i).getDate().substring(24,28));
-
-                    switch(eventMonth) {
-                        case "Jan":
-                            eventMonthAsInt = 0;
-                            break;
-                        case "Feb":
-                            eventMonthAsInt = 1;
-                            break;
-                        case "Mar":
-                            eventMonthAsInt = 2;
-                            break;
-                        case "Apr":
-                            eventMonthAsInt = 3;
-                            break;
-                        case "May":
-                            eventMonthAsInt = 4;
-                            break;
-                        case "Jun":
-                            eventMonthAsInt = 5;
-                            break;
-                        case "Jul":
-                            eventMonthAsInt = 6;
-                            break;
-                        case "Aug":
-                            eventMonthAsInt = 7;
-                            break;
-                        case "Sep":
-                            eventMonthAsInt = 8;
-                            break;
-                        case "Oct":
-                            eventMonthAsInt = 9;
-                            break;
-                        case "Nov":
-                            eventMonthAsInt = 10;
-                            break;
-                        case "Dec":
-                            eventMonthAsInt = 11;
-                            break;
-                    }
-
-                    if(eventDay == dayOfMonth && eventMonthAsInt == month && eventYear == year) {
-                        dayEvents.add(calendarEvents.get(i));
-                    }
-                }
-                displayCalendarEvents(dayEvents);
+                displayDayEvents(view, year, month, dayOfMonth);
             }
         });
 
         searchCalendarTable();
+    }
+
+    private void displayDayEvents(CalendarView view, int year, int month, int dayOfMonth) {
+        // write code to change the displayed events based on this.
+        Log.v("date", "year: " + String.valueOf(year) + " " + "month: " + String.valueOf(month) + " " + "day: " + String.valueOf(dayOfMonth));
+        ArrayList<Event> dayEvents = new ArrayList<Event>();
+        for(int i = 0; i < calendarEvents.size(); i++) {
+            int eventDay = Integer.parseInt(calendarEvents.get(i).getDate().substring(8,10));
+            String eventMonth = calendarEvents.get(i).getDate().substring(4,7);
+            int eventMonthAsInt = 100;
+            int eventYear = Integer.parseInt(calendarEvents.get(i).getDate().substring(24,28));
+
+            switch(eventMonth) {
+                case "Jan":
+                    eventMonthAsInt = 0;
+                    break;
+                case "Feb":
+                    eventMonthAsInt = 1;
+                    break;
+                case "Mar":
+                    eventMonthAsInt = 2;
+                    break;
+                case "Apr":
+                    eventMonthAsInt = 3;
+                    break;
+                case "May":
+                    eventMonthAsInt = 4;
+                    break;
+                case "Jun":
+                    eventMonthAsInt = 5;
+                    break;
+                case "Jul":
+                    eventMonthAsInt = 6;
+                    break;
+                case "Aug":
+                    eventMonthAsInt = 7;
+                    break;
+                case "Sep":
+                    eventMonthAsInt = 8;
+                    break;
+                case "Oct":
+                    eventMonthAsInt = 9;
+                    break;
+                case "Nov":
+                    eventMonthAsInt = 10;
+                    break;
+                case "Dec":
+                    eventMonthAsInt = 11;
+                    break;
+            }
+
+            if(eventDay == dayOfMonth && eventMonthAsInt == month && eventYear == year) {
+                dayEvents.add(calendarEvents.get(i));
+            }
+        }
+        displayCalendarEvents(dayEvents);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        searchCalendarTable();
+        Date selectedDate = new Date(calendarView.getDate());
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+        SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+        String yearStr = yearFormat.format(selectedDate);
+        String monthStr = monthFormat.format(selectedDate);
+        String dayStr = dayFormat.format(selectedDate);
+        displayDayEvents(calendarView, Integer.parseInt(yearStr), Integer.parseInt(monthStr), Integer.parseInt(dayStr));
     }
 
     private void searchCalendarTable() {
@@ -176,6 +198,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
             // Get new uri to query the events table
             Uri eventsUri = CalendarContract.Events.CONTENT_URI;
             cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
+            calendarEvents.clear();
             while(cur.moveToNext()) {
                 String title = null;
                 String description = null;
@@ -210,26 +233,25 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     public void displayCalendarEvents(ArrayList<Event> events) {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
         TextView newView;
-        if(events.size() == 0) {
-            for(int i = 1; i < linearLayout.getChildCount(); i++) {
-                linearLayout.removeViewAt(i);
-            }
-        } else {
+        for(int i = 0; i < viewList.size(); i++) {
+            linearLayout.removeView(viewList.get(i));
+        }
+        viewList.clear();
             // Adds each element in the CalendarEvent's array to the display
-            for(int idx = 0; idx < events.size(); idx++){
+            for(int idx = 0; idx < events.size(); idx++) {
                 newView = new TextView(this);
                 newView.setText(events.get(idx).getCalendarText());
                 newView.setTextSize(20);
 
                 // Switches background color so every other event
-                if(idx %2 == 0){
+                if (idx % 2 == 0) {
                     newView.setBackgroundResource(R.drawable.calendar_color1);
-                }else{
+                } else {
                     newView.setBackgroundResource(R.drawable.calendar_color2);
                 }
                 linearLayout.addView(newView);
+                viewList.add(newView);
             }
-        }
     }
 
     @Override
@@ -239,5 +261,21 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             searchCalendarTable();
         }
+    }
+
+    public void addEvent(View v) {
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.set(2021, 10, 24, 7, 30);
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(2021, 10, 24, 8, 30);
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(CalendarContract.Events.TITLE, "Yoga")
+                .putExtra(CalendarContract.Events.DESCRIPTION, "Group class")
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
+                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+        startActivity(intent);
     }
 }
