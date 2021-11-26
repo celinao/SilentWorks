@@ -5,6 +5,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -77,6 +79,17 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     }
 
     private void searchCalendarTable() {
+
+        // off-line mode getting the events from the storage if any
+        if (isNetworkAvailable()) {
+            LoginStorage loginStorage = new LoginStorage(getApplicationContext());
+            String username = loginStorage.getUsername();
+            if (!username.equals("")) {
+                EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
+                calendarEvents = eventsStorage.readNote(username);
+            }
+        }
+
         int permission = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.READ_CALENDAR);
         int permissionTwo = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
@@ -158,6 +171,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 calendarEvents.add(tempEvent);
 
                 // store the events into SQLite for off-line
+                eventsStorage.deleteEvent(username);
                 eventsStorage.saveEvent(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
                         formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
 
@@ -193,5 +207,12 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             searchCalendarTable();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
