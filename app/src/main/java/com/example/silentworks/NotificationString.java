@@ -31,13 +31,13 @@ public class NotificationString {
     public String getString() {
         String tbr = "";
         if (title != null) {
-            tbr = tbr + title + ", ";
+            tbr = tbr + title;
         }
         if (text != null) {
-            tbr = tbr + text + ", ";
+            tbr = tbr  + ", " + text;
         }
         if (textline != null) {
-            tbr = tbr + textline;
+            tbr = tbr +  ", " + textline;
         }
         return tbr;
     }

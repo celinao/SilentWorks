@@ -172,8 +172,16 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
 
                 // store the events into SQLite for off-line
                 eventsStorage.deleteEvent(username);
-                eventsStorage.saveEvent(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
-                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
+                String titlePass = title;
+                if (title.contains("'")) {
+                    titlePass = title.replace("'","");
+                }
+                String descriptionPass = description;
+                if (description.contains("'")) {
+                    descriptionPass = description.replace("'","");
+                }
+                eventsStorage.saveEvent(username, startDate.toString(), formatterHour.format(startDate),
+                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), titlePass, descriptionPass, "false");
 
             }
             displayCalendarEvents();
