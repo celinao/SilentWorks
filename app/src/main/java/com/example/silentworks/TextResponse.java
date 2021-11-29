@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 public class TextResponse extends BroadcastReceiver {
 
+    private int text_response;
     private Context context;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -55,4 +57,9 @@ public class TextResponse extends BroadcastReceiver {
             }
             previousState = state;
         }
-    };}
+    };
+
+    public void setTextResponse(int text_response) {
+        this.text_response = text_response;
+    }
+}
