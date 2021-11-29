@@ -13,7 +13,8 @@ public class NotificationPage extends OptionsMenu {
     private LinearLayout linearLayout;
     private String[] notifications = new String[NotificationList.Notifications.size()];
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
