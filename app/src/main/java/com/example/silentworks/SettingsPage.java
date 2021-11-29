@@ -73,7 +73,7 @@ public class SettingsPage extends OptionsMenu{
 
             }
         });
-        TextResponse autoTextResponse = new TextResponse;
+        TextResponse autoTextResponse = new TextResponse();
         CheckBox checkAutoTextResponse = (CheckBox)findViewById(R.id.checkAutoTextResponse);
         checkAutoTextResponse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
