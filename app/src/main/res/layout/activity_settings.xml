@@ -6,183 +6,123 @@
     android:layout_height="match_parent"
     tools:context=".settings">
 
-  <TextView
-      android:id="@+id/settingsTitle"
-      android:text="Settings"
-      android:textColor="@color/purple_700"
-      android:textSize="35dp"
+
+  <ScrollView
+      android:id="@+id/horizontalScrollView"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="2dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      >
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        >
+
+      <TextView
+          android:id="@+id/settingsTitle"
+          android:text="Settings"
+          android:textColor="@color/purple_700"
+          android:textSize="35dp"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          />
+
+      <RadioGroup
+          android:id="@+id/radioGroup"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/settingsTitle">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Standard" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop All Notifications" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Muting Notifications" />
+      </RadioGroup>
+
+      <TimePicker
+          android:id="@+id/timePicker"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center" />
+
+      <ToggleButton
+          android:id="@+id/toggleButton"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:checked="false"
+          android:onClick="OnToggleClicked" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:text="Start DND"
+            android:layout_margin="20dp"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Stop DND"
+            android:layout_margin="20dp"/>
+      </LinearLayout>
+
+  <CheckBox
+      android:id="@+id/checkGetNotifications"
+      android:text="Get Notifications via Email"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintVertical_bias=".025"/>
+      app:layout_constraintTop_toBottomOf="@+id/TimerHour"
+      android:layout_margin="10dp"
+      />
 
 
-<!--  <TimePicker-->
-<!--      android:id="@+id/timePicker"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      app:layout_constraintLeft_toLeftOf="parent"-->
-<!--      app:layout_constraintRight_toRightOf="parent"-->
-<!--      app:layout_constraintHorizontal_bias="0.5"-->
-<!--      app:layout_constraintTop_toTopOf="parent"-->
-<!--      app:layout_constraintBottom_toBottomOf="parent"-->
-<!--      app:layout_constraintVertical_bias=".2" />-->
+      <Button
+          android:id="@+id/logOut"
+          android:text="Log Out"
+          android:onClick="logOut"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          />
 
-<!--  <EditText-->
-<!--      android:id="@+id/time"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      app:layout_constraintLeft_toLeftOf="parent"-->
-<!--      app:layout_constraintRight_toRightOf="parent"-->
-<!--      app:layout_constraintHorizontal_bias="0.5"-->
-<!--      app:layout_constraintTop_toTopOf="parent"-->
-<!--      app:layout_constraintBottom_toBottomOf="parent"-->
-<!--      app:layout_constraintVertical_bias=".55"-->
-<!--      android:ems="10"-->
-<!--      android:hint="Number of minutes"-->
-<!--      android:inputType="numberDecimal" />-->
-
-  <Button
-      android:id="@+id/button1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintVertical_bias=".7"
-      android:text="Start" />
-
-  <Button
-      android:id="@+id/button2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintVertical_bias=".8"
-      android:text="Stop" />
-
-
-  <!--  <RadioGroup-->
-<!--      android:id="@+id/radioGroup"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:orientation="vertical"-->
-<!--      app:layout_constraintEnd_toEndOf="parent"-->
-<!--      app:layout_constraintHorizontal_bias="0.5"-->
-<!--      app:layout_constraintStart_toStartOf="parent"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/settingsTitle">-->
-
-<!--    <RadioButton-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Standard" />-->
-
-<!--    <RadioButton-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Stop All Notifications" />-->
-
-<!--    <RadioButton-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Stop Muting Notifications" />-->
-<!--  </RadioGroup>-->
-
-<!--&lt;!&ndash;  See if you can make the timer only appear when stop all Notif or Stop Muting is clicked-->
-<!--      then add a submit button. &ndash;&gt;-->
-<!--  <TextView-->
-<!--      android:id="@+id/timerText"-->
-<!--      android:text="Stop/Start Notifications for:"-->
-<!--      android:textColor="@color/purple_700"-->
-<!--      android:textSize="20dp"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/radioGroup"-->
-<!--      android:layout_margin="20dp"-->
-<!--      app:layout_constraintLeft_toLeftOf="parent"-->
-<!--      app:layout_constraintRight_toRightOf="parent"-->
-<!--      app:layout_constraintHorizontal_bias="0.5"-->
-<!--      />-->
-
-<!--  <NumberPicker-->
-<!--      android:id="@+id/TimerHour"-->
-<!--      android:layout_width="0dp"-->
-<!--      android:layout_height="100dp"-->
-<!--      android:layout_marginLeft="40dp"-->
-<!--      app:layout_constraintLeft_toLeftOf="@+id/timerText"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/timerText"-->
-<!--      />-->
-
-
-<!--  <NumberPicker-->
-<!--      android:id="@+id/TimerMin"-->
-<!--      android:layout_width="0dp"-->
-<!--      android:layout_height="100dp"-->
-<!--      android:layout_marginRight="40dp"-->
-<!--      app:layout_constraintRight_toRightOf="@+id/timerText"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/timerText"-->
-<!--      />-->
-
-<!--  <TextView-->
-<!--      android:id="@+id/hourLabel"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:layout_marginBottom="40dp"-->
-<!--      android:text="Hours"-->
-<!--      app:layout_constraintBottom_toBottomOf="@+id/TimerHour"-->
-<!--      app:layout_constraintTop_toTopOf="@+id/minLabel"-->
-<!--      app:layout_constraintRight_toLeftOf="@+id/TimerHour"/>-->
-
-<!--  <TextView-->
-<!--      android:id="@+id/minLabel"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:text="Minutes"-->
-<!--      app:layout_constraintBottom_toBottomOf="@+id/TimerMin"-->
-<!--      app:layout_constraintTop_toTopOf="@+id/TimerMin"-->
-<!--      app:layout_constraintRight_toLeftOf="@+id/TimerMin"/>-->
-
-<!--  <CheckBox-->
-<!--      android:id="@+id/checkGetNotifications"-->
-<!--      android:text="Get Notifications via Email"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      app:layout_constraintLeft_toLeftOf="parent"-->
-<!--      app:layout_constraintRight_toRightOf="parent"-->
-<!--      app:layout_constraintHorizontal_bias="0.5"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/TimerHour"-->
-<!--      android:layout_margin="10dp"-->
-<!--      />-->
-
-<!--  <CheckBox-->
-<!--      android:id="@+id/checkGetDarkMode"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:text="Dark Mode"-->
-<!--      app:layout_constraintLeft_toLeftOf="@+id/checkGetNotifications"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/checkGetNotifications" />-->
-
-
-<!--  <Button-->
-<!--      android:id="@+id/logOut"-->
-<!--      android:text="Log Out"-->
-<!--      android:onClick="logOut"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      app:layout_constraintLeft_toLeftOf="parent"-->
-<!--      app:layout_constraintRight_toRightOf="parent"-->
-<!--      app:layout_constraintHorizontal_bias="0.5"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/checkGetDarkMode"-->
-<!--      />-->
+  </LinearLayout>
+  </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

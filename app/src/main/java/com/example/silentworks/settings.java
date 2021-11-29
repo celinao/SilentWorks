@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -34,27 +35,21 @@ public class settings extends OptionsMenu{
     private NotificationManager mNotificationManager;
     private Button b1;
     private Button b2;
-//    private TimePicker alarmTimePicker;
-//    private AlarmManager alarmManager;
-//    private PendingIntent pendingIntent;
+    TimePicker alarmTimePicker;
+    PendingIntent pendingIntent;
+    AlarmManager alarmManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Log.i("tag", "SETTINGS ACTIVITY");
-
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-//        alarmTimePicker = (TimePicker) findViewById(R.id.timePicker);
-//        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmTimePicker = (TimePicker) findViewById(R.id.timePicker);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         b1 = (Button) findViewById(R.id.button1);
         b2 = (Button) findViewById(R.id.button2);
-
-
-
 
         b1.setOnClickListener(new View.OnClickListener() {
 
@@ -67,7 +62,6 @@ public class settings extends OptionsMenu{
                     Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                     startActivity(intent);
                 }else {
-                    b1.setText("ACCESS GRANTED");
                     mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
                 }
             }
@@ -89,47 +83,35 @@ public class settings extends OptionsMenu{
 //                startAlert();
             }
         });
-
-
-//        pickerVals = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
-//        hourPicker = findViewById(R.id.TimerHour);
-//        hourPicker.setMaxValue(10);
-//        hourPicker.setMinValue(0);
-//        hourPicker.setDisplayedValues(pickerVals);
-//
-//        minPicker = findViewById(R.id.TimerMin);
-//        minPicker.setMaxValue(5);
-//        minPicker.setMinValue(0);
-//        minPicker.setDisplayedValues(pickerVals);
-
-//        hourPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-//            @Override
-//            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-//                int valuePicker1 = hourPicker.getValue();
-//                Log.d("picker value", pickerVals[valuePicker1]);
-//            }
-//        });
-//
-//        minPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-//            @Override
-//            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-//                int valuePicker1 = minPicker.getValue();
-//                Log.d("picker value", pickerVals[valuePicker1]);
-//            }
-//        });
     }
 
-    public void startAlert() {
-//        EditText text = (EditText) findViewById(R.id.time);
-//        int i = Integer.parseInt(text.getText().toString());
-//        Intent intent = new Intent(this, MyBroadcastReciever.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-//                this.getApplicationContext(), 234324243, intent, 0);
-//
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() +
-//                (i * 1000), pendingIntent);
-//        Toast.makeText(this, "Alarm set in " + i + " minutes", Toast.LENGTH_LONG).show();
+    public void OnToggleClicked(View view)
+    {
+        long time;
+        if (((ToggleButton) view).isChecked())
+        {
+            Toast.makeText(settings.this, "ALARM ON", Toast.LENGTH_SHORT).show();
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, alarmTimePicker.getCurrentHour());
+            calendar.set(Calendar.MINUTE, alarmTimePicker.getCurrentMinute());
+            Intent intent = new Intent(this, AlarmReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+            time=(calendar.getTimeInMillis()-(calendar.getTimeInMillis()%60000));
+            if(System.currentTimeMillis()>time)
+            {
+                if (calendar.AM_PM == 0)
+                    time = time + (1000*60*60*12);
+                else
+                    time = time + (1000*60*60*24);
+            }
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, 10000, pendingIntent);
+        }
+        else
+        {
+            alarmManager.cancel(pendingIntent);
+            Toast.makeText(settings.this, "ALARM OFF", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // This function sends you back to the main page but, doesn't log out the user.
