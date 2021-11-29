@@ -23,16 +23,11 @@ import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.NumberPicker;
-import android.widget.Spinner;
 
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class SettingsPage extends OptionsMenu{
+public class settings extends OptionsMenu{
 
 //    private NumberPicker hourPicker;
 //    private NumberPicker minPicker;
@@ -46,6 +41,7 @@ public class SettingsPage extends OptionsMenu{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -58,13 +54,19 @@ public class SettingsPage extends OptionsMenu{
         b1.setOnClickListener(new View.OnClickListener() {
 
             @RequiresApi(api = Build.VERSION_CODES.M)
-        super.onCreate(savedInstanceState);
+            @Override
+            public void onClick(View v){
 
-        Spinner dropdown = findViewById(R.id.modeSelectionSpinner);
-        String[] items = new String[]{"Standard", "Stop All Notifications", "Stop Muting Notifications"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
-
+                // Check if the notification policy access has been granted for the app.
+                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                    startActivity(intent);
+                }else {
+                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+                }
+            }
+        });
+//
         b2.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -81,6 +83,7 @@ public class SettingsPage extends OptionsMenu{
 //                startAlert();
             }
         });
+    }
 
     public void OnToggleClicked(View view)
     {
@@ -111,34 +114,6 @@ public class SettingsPage extends OptionsMenu{
         }
     }
 
-        CheckBox checkGetNotifications = (CheckBox)findViewById(R.id.checkGetNotifications);
-        checkGetNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-
-            }
-        });
-
-        CheckBox checkGetDarkMode = (CheckBox)findViewById(R.id.checkGetDarkMode);
-        checkGetDarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-
-            }
-        });
-        TextResponse autoTextResponse = new TextResponse();
-        CheckBox checkAutoTextResponse = (CheckBox)findViewById(R.id.checkAutoTextResponse);
-        checkAutoTextResponse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(isChecked) {
-                    autoTextResponse.setTextResponse(1);
-                } else {
-                    autoTextResponse.setTextResponse(0);
-                }
-            }
-        });
-    }
     // This function sends you back to the main page but, doesn't log out the user.
     public void logOut(View view){
         startActivity(new Intent(this, MainPage.class));

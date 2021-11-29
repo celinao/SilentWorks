@@ -4,58 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsPage">
+    tools:context=".settings">
 
 
-    <ScrollView
-        android:id="@+id/horizontalScrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+  <ScrollView
+      android:id="@+id/horizontalScrollView"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="2dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      >
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
         >
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="10dp"
-            >
-        <Spinner
-            android:id="@+id/modeSelectionSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="84dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+      <TextView
+          android:id="@+id/settingsTitle"
+          android:text="Settings"
+          android:textColor="@color/purple_700"
+          android:textSize="35dp"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          />
 
-        <TextView
-            android:id="@+id/settingsTitle"
-            android:text="Settings"
-            android:textColor="@color/purple_700"
-            android:textSize="35dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            />
-
-        <RadioGroup
-            android:id="@+id/radioGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settingsTitle">
+      <RadioGroup
+          android:id="@+id/radioGroup"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/settingsTitle">
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -71,21 +60,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop Muting Notifications" />
-        </RadioGroup>
+      </RadioGroup>
 
-        <TimePicker
-            android:id="@+id/timePicker"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center" />
+      <TimePicker
+          android:id="@+id/timePicker"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center" />
 
-        <ToggleButton
-            android:id="@+id/toggleButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:checked="false"
-            android:onClick="OnToggleClicked" />
+      <ToggleButton
+          android:id="@+id/toggleButton"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:checked="false"
+          android:onClick="OnToggleClicked" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center_horizontal">
 
         <Button
             android:id="@+id/button1"
@@ -103,46 +97,32 @@
             android:layout_gravity="center"
             android:text="Stop DND"
             android:layout_margin="20dp"/>
+      </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/checkGetNotifications"
-            android:text="Get Notifications via Email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintTop_toBottomOf="@+id/TimerHour"
-            android:layout_margin="10dp"
-            />
+  <CheckBox
+      android:id="@+id/checkGetNotifications"
+      android:text="Get Notifications via Email"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintTop_toBottomOf="@+id/TimerHour"
+      android:layout_margin="10dp"
+      />
 
-        <CheckBox
-            android:id="@+id/checkAutoTextResponse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Auto Text Response"
-            app:layout_constraintLeft_toLeftOf="@+id/checkGetNotifications"
-            app:layout_constraintTop_toBottomOf="@+id/checkGetNotifications" />
 
-        <CheckBox
-            android:id="@+id/checkGetDarkMode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dark Mode"
-            app:layout_constraintLeft_toLeftOf="@+id/checkGetNotifications"
-            app:layout_constraintTop_toBottomOf="@+id/checkAutoTextResponse" />
+      <Button
+          android:id="@+id/logOut"
+          android:text="Log Out"
+          android:onClick="logOut"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          />
 
-        <Button
-            android:id="@+id/logOut"
-            android:text="Log Out"
-            android:onClick="logOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
-
-    </LinearLayout>
-</ScrollView>
+  </LinearLayout>
+  </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
