@@ -34,9 +34,6 @@ import java.util.Calendar;
 
 public class SettingsPage extends OptionsMenu{
 
-//    private NumberPicker hourPicker;
-//    private NumberPicker minPicker;
-//    private String[] pickerVals;
     private NotificationManager mNotificationManager;
     private Button b1;
     private Button b2;
@@ -44,9 +41,11 @@ public class SettingsPage extends OptionsMenu{
     PendingIntent pendingIntent;
     AlarmManager alarmManager;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_settings);
+        super.onCreate(savedInstanceState);
 
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         alarmTimePicker = (TimePicker) findViewById(R.id.timePicker);
@@ -55,15 +54,24 @@ public class SettingsPage extends OptionsMenu{
         b1 = (Button) findViewById(R.id.button1);
         b2 = (Button) findViewById(R.id.button2);
 
-        b1.setOnClickListener(new View.OnClickListener() {
-
-            @RequiresApi(api = Build.VERSION_CODES.M)
-        super.onCreate(savedInstanceState);
-
         Spinner dropdown = findViewById(R.id.modeSelectionSpinner);
         String[] items = new String[]{"Standard", "Stop All Notifications", "Stop Muting Notifications"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                // Check if the notification policy access has been granted for the app.
+                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                    startActivity(intent);
+                }else {
+                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+                }
+            }
+        });
 
         b2.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -78,38 +86,8 @@ public class SettingsPage extends OptionsMenu{
                     b1.setText("ACCESS GRANTED");
                     mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
                 }
-//                startAlert();
             }
         });
-
-    public void OnToggleClicked(View view)
-    {
-        long time;
-        if (((ToggleButton) view).isChecked())
-        {
-            Toast.makeText(settings.this, "ALARM ON", Toast.LENGTH_SHORT).show();
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, alarmTimePicker.getCurrentHour());
-            calendar.set(Calendar.MINUTE, alarmTimePicker.getCurrentMinute());
-            Intent intent = new Intent(this, AlarmReceiver.class);
-            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-            time=(calendar.getTimeInMillis()-(calendar.getTimeInMillis()%60000));
-            if(System.currentTimeMillis()>time)
-            {
-                if (calendar.AM_PM == 0)
-                    time = time + (1000*60*60*12);
-                else
-                    time = time + (1000*60*60*24);
-            }
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, 10000, pendingIntent);
-        }
-        else
-        {
-            alarmManager.cancel(pendingIntent);
-            Toast.makeText(settings.this, "ALARM OFF", Toast.LENGTH_SHORT).show();
-        }
-    }
 
         CheckBox checkGetNotifications = (CheckBox)findViewById(R.id.checkGetNotifications);
         checkGetNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -139,6 +117,33 @@ public class SettingsPage extends OptionsMenu{
             }
         });
     }
+
+    public void OnToggleClicked(View view){
+        long time;
+        if (((ToggleButton) view).isChecked())
+        {
+            Toast.makeText(SettingsPage.this, "ALARM ON", Toast.LENGTH_SHORT).show();
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, alarmTimePicker.getCurrentHour());
+            calendar.set(Calendar.MINUTE, alarmTimePicker.getCurrentMinute());
+            Intent intent = new Intent(this, AlarmReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+            time=(calendar.getTimeInMillis()-(calendar.getTimeInMillis()%60000));
+            if(System.currentTimeMillis()>time)
+            {
+                if (calendar.AM_PM == 0)
+                    time = time + (1000*60*60*12);
+                else
+                    time = time + (1000*60*60*24);
+            }
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, 10000, pendingIntent);
+        }else{
+            alarmManager.cancel(pendingIntent);
+            Toast.makeText(SettingsPage.this, "ALARM OFF", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     // This function sends you back to the main page but, doesn't log out the user.
     public void logOut(View view){
         startActivity(new Intent(this, MainPage.class));

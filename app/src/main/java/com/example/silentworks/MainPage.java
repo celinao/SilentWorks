@@ -30,7 +30,6 @@ public class MainPage extends OptionsMenu implements Serializable {
     }
 
     public void toGoogleLogin(View view) {
-        Log.i("not something", "yee");
 
     }
 }
