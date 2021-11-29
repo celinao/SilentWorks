@@ -127,7 +127,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
 
     private AlertDialog buildNotificationServiceAlertDialog(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("Android Alert Message");
+        alertDialogBuilder.setTitle("Allow us to access your notifications?");
         alertDialogBuilder.setPositiveButton("yes",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -139,6 +139,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
                     public void onClick(DialogInterface dialog, int id) {
                         // If you choose to not enable the notification listener
                         // the app. will not work as expected
+                        alertDialogBuilder.setTitle("Come on, just allow us to access your notifications?");
                     }
                 });
         return(alertDialogBuilder.create());

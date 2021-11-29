@@ -5,6 +5,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -77,6 +79,17 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     }
 
     private void searchCalendarTable() {
+
+        // off-line mode getting the events from the storage if any
+        if (isNetworkAvailable()) {
+            LoginStorage loginStorage = new LoginStorage(getApplicationContext());
+            String username = loginStorage.getUsername();
+            if (!username.equals("")) {
+                EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
+                calendarEvents = eventsStorage.readNote(username);
+            }
+        }
+
         int permission = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.READ_CALENDAR);
         int permissionTwo = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
@@ -123,6 +136,13 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
             // Get new uri to query the events table
             Uri eventsUri = CalendarContract.Events.CONTENT_URI;
             cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
+
+            // Storing the login info to local and start SQLite
+            String username = account.getEmail();
+            LoginStorage loginStorage = new LoginStorage(getApplicationContext());
+            loginStorage.setUsername(username);
+            EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
+
             while(cur.moveToNext()) {
                 String title = null;
                 String description = null;
@@ -149,6 +169,20 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                         formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
 
                 calendarEvents.add(tempEvent);
+
+                // store the events into SQLite for off-line
+                eventsStorage.deleteEvent(username);
+                String titlePass = title;
+                if (title.contains("'")) {
+                    titlePass = title.replace("'","");
+                }
+                String descriptionPass = description;
+                if (description.contains("'")) {
+                    descriptionPass = description.replace("'","");
+                }
+                eventsStorage.saveEvent(username, startDate.toString(), formatterHour.format(startDate),
+                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), titlePass, descriptionPass, "false");
+
             }
             displayCalendarEvents();
         }
@@ -181,5 +215,12 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             searchCalendarTable();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
