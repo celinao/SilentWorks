@@ -1,7 +1,9 @@
 package com.example.silentworks;
 
+import android.app.Notification;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -16,6 +18,7 @@ public class NotificationString {
     String summary;
     String infoText;
     String category;
+    String bigText;
 
     //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -27,8 +30,11 @@ public class NotificationString {
         subtext = statusBarNotification.getNotification().extras.getString("android.subText");
         summary = statusBarNotification.getNotification().extras.getString("android.summaryText");
         infoText = statusBarNotification.getNotification().extras.getString("android.infoText");
+        // bigText = statusBarNotification.getNotification().extras.get(Notification.EXTRA_BIG_TEXT);
         category = statusBarNotification.getNotification().category;
-
+        if (statusBarNotification.getNotification().extras.get(Notification.EXTRA_BIG_TEXT) != null) {
+            Log.i("qwert", statusBarNotification.getNotification().extras.get(Notification.EXTRA_BIG_TEXT).toString());
+        }
     }
 
     public String getString() {
