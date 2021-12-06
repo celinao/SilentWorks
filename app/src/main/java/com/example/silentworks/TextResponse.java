@@ -20,13 +20,15 @@ public class TextResponse extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Yee",
-                Toast.LENGTH_SHORT).show();
+
         Log.i("Recieved something", "yee");
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             Bundle bundle = intent.getExtras();
             Object[] pdus = (Object[]) bundle.get("pdus");
             SmsMessage[] messages = new SmsMessage[pdus.length];
+            messages[0]=SmsMessage.createFromPdu((byte[]) pdus[0]);
+            Toast.makeText(context, messages[0].toString(),
+                    Toast.LENGTH_SHORT).show();
             String phoneNumber = messages[0].getOriginatingAddress();
             if (bundle != null) {
                 SmsManager smsManager = SmsManager.getDefault();
