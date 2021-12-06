@@ -44,19 +44,19 @@
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown" />
 
-        <TimePicker
-            android:id="@+id/timePicker"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center" />
+<!--        <TimePicker-->
+<!--            android:id="@+id/timePicker"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center" />-->
 
-        <ToggleButton
-            android:id="@+id/toggleButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:checked="false"
-            android:onClick="OnToggleClicked" />
+<!--        <ToggleButton-->
+<!--            android:id="@+id/toggleButton"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:checked="false"-->
+<!--            android:onClick="OnToggleClicked" />-->
 
         <Button
             android:id="@+id/button1"
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Stop DND"
+            android:text="Turn On DND Permissions"
             android:layout_margin="20dp"/>
 
         <CheckBox

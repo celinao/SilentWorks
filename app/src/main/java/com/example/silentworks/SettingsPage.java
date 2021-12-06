@@ -17,8 +17,10 @@ import android.os.Bundle;
 //import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -32,14 +34,12 @@ import android.widget.Spinner;
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class SettingsPage extends OptionsMenu{
+public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelectedListener{
 
     private NotificationManager mNotificationManager;
     private Button b1;
     private Button b2;
-    TimePicker alarmTimePicker;
-    PendingIntent pendingIntent;
-    AlarmManager alarmManager;
+    String[] items;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -48,46 +48,12 @@ public class SettingsPage extends OptionsMenu{
         super.onCreate(savedInstanceState);
 
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        alarmTimePicker = (TimePicker) findViewById(R.id.timePicker);
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        b1 = (Button) findViewById(R.id.button1);
-        b2 = (Button) findViewById(R.id.button2);
 
         Spinner dropdown = findViewById(R.id.modeSelectionSpinner);
-        String[] items = new String[]{"Standard", "Stop All Notifications", "Stop Muting Notifications"};
+        items = new String[]{"Standard", "Stop All Notifications", "Stop Muting Notifications"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
-
-        b1.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                // Check if the notification policy access has been granted for the app.
-                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                    startActivity(intent);
-                }else {
-                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
-                }
-            }
-        });
-
-        b2.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-
-                // Check if the notification policy access has been granted for the app.
-                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                    startActivity(intent);
-                }else {
-                    b1.setText("ACCESS GRANTED");
-                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
-                }
-            }
-        });
+        dropdown.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
 
         CheckBox checkGetNotifications = (CheckBox)findViewById(R.id.checkGetNotifications);
         checkGetNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -104,6 +70,7 @@ public class SettingsPage extends OptionsMenu{
 
             }
         });
+
         TextResponse autoTextResponse = new TextResponse();
         CheckBox checkAutoTextResponse = (CheckBox)findViewById(R.id.checkAutoTextResponse);
         checkAutoTextResponse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -118,33 +85,51 @@ public class SettingsPage extends OptionsMenu{
         });
     }
 
-    public void OnToggleClicked(View view){
-        long time;
-        if (((ToggleButton) view).isChecked())
-        {
-            Toast.makeText(SettingsPage.this, "ALARM ON", Toast.LENGTH_SHORT).show();
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, alarmTimePicker.getCurrentHour());
-            calendar.set(Calendar.MINUTE, alarmTimePicker.getCurrentMinute());
-            Intent intent = new Intent(this, AlarmReceiver.class);
-            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+        // STILL NEED TO DO:
+        //1. Get time from Time Picker (not a default 5 seconds)
+        //2. Turn on/off DND before the timer finishes (maybe once selected and not upon button?)
+        //3. Remove Positions Button and add it to the start of the app upon open.
+        if (position > 0){
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+            TimePicker timePicker = new TimePicker(getApplicationContext());
+            linearLayout.addView(timePicker, 2);
 
-            time=(calendar.getTimeInMillis()-(calendar.getTimeInMillis()%60000));
-            if(System.currentTimeMillis()>time)
-            {
-                if (calendar.AM_PM == 0)
-                    time = time + (1000*60*60*12);
-                else
-                    time = time + (1000*60*60*24);
+            Button startTimer = new Button(getApplicationContext());
+            startTimer.setText("Start");
+            if (position == 1){
+                // Stop All Notifications
+                startTimer.setOnClickListener(v -> {
+                    int time = 5;
+                    Intent intent = new Intent(SettingsPage.this, TurnOnDND.class);
+                    PendingIntent p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+                    AlarmManager a = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    a.set(AlarmManager.RTC, System.currentTimeMillis() + time * 1000, p1);
+                });
+            }else{
+                // Stop Muting Notifications
+                startTimer.setOnClickListener(v -> {
+                    int time = 5;
+                    Toast.makeText(this, "set", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(SettingsPage.this, TurnOnDND.class);
+                    PendingIntent p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+                    AlarmManager a = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    a.set(AlarmManager.RTC, System.currentTimeMillis() + time * 1000, p1);
+                });
             }
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, 10000, pendingIntent);
-        }else{
-            alarmManager.cancel(pendingIntent);
-            Toast.makeText(SettingsPage.this, "ALARM OFF", Toast.LENGTH_SHORT).show();
+
+
+            linearLayout.addView(startTimer, 3);
         }
     }
 
-    // This function sends you back to the main page but, doesn't log out the user.
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+
+    }
+
+
     public void logOut(View view){
         startActivity(new Intent(this, MainPage.class));
     }
