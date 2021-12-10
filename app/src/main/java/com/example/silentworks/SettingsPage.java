@@ -88,7 +88,6 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
-        //1. Get time from Time Picker (not a default 5 seconds)
         //3. Remove Positions Button and add it to the start of the app upon open.
         if (position > 0){
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
