@@ -37,8 +37,7 @@ import java.util.Calendar;
 public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelectedListener{
 
     private NotificationManager mNotificationManager;
-    private Button b1;
-    private Button b2;
+    private PendingIntent p1;
     String[] items;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -49,6 +48,7 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
 
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        //Creates dropdown menu
         Spinner dropdown = findViewById(R.id.modeSelectionSpinner);
         items = new String[]{"Standard", "Stop All Notifications", "Stop Muting Notifications"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
@@ -85,40 +85,61 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
-        // STILL NEED TO DO:
         //1. Get time from Time Picker (not a default 5 seconds)
-        //2. Turn on/off DND before the timer finishes (maybe once selected and not upon button?)
         //3. Remove Positions Button and add it to the start of the app upon open.
         if (position > 0){
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
             TimePicker timePicker = new TimePicker(getApplicationContext());
+            timePicker.setIs24HourView(true);
             linearLayout.addView(timePicker, 2);
 
-            Button startTimer = new Button(getApplicationContext());
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+            calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+            long time = (calendar.getTimeInMillis() - (calendar.getTimeInMillis() % 60000));
+
+            mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            ToggleButton startTimer = new ToggleButton(getApplicationContext());
             startTimer.setText("Start");
+            startTimer.setTextOff("Start");
+            startTimer.setTextOn("Cancel");
+            AlarmManager a = (AlarmManager) getSystemService(ALARM_SERVICE);
+
             if (position == 1){
                 // Stop All Notifications
+                long finalTime = time;
                 startTimer.setOnClickListener(v -> {
-                    int time = 5;
-                    Intent intent = new Intent(SettingsPage.this, TurnOnDND.class);
-                    PendingIntent p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                    AlarmManager a = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    a.set(AlarmManager.RTC, System.currentTimeMillis() + time * 1000, p1);
+                    if(!startTimer.isChecked()){
+                        a.cancel(p1);
+                    }else {
+                        if (mNotificationManager.isNotificationPolicyAccessGranted()) {
+                            mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+                        }
+                        Intent intent = new Intent(SettingsPage.this, TurnOffDND.class);
+                        p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+                        a.set(AlarmManager.RTC, calendar.getTimeInMillis(), p1);
+                    }
                 });
             }else{
                 // Stop Muting Notifications
+                long finalTime = time;
                 startTimer.setOnClickListener(v -> {
-                    int time = 5;
-                    Toast.makeText(this, "set", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(SettingsPage.this, TurnOnDND.class);
-                    PendingIntent p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                    AlarmManager a = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    a.set(AlarmManager.RTC, System.currentTimeMillis() + time * 1000, p1);
+                    if(!startTimer.isChecked()){
+                        a.cancel(p1);
+                    }else {
+                        if (mNotificationManager.isNotificationPolicyAccessGranted()) {
+                            mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
+                        }
+
+                        Intent intent = new Intent(SettingsPage.this, TurnOnDND.class);
+                        p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+                        a.set(AlarmManager.RTC, calendar.getTimeInMillis(), p1);
+                    }
                 });
             }
-
 
             linearLayout.addView(startTimer, 3);
         }
