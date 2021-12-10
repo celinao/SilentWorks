@@ -30,10 +30,9 @@ public class NotificationString {
         subtext = statusBarNotification.getNotification().extras.getString("android.subText");
         summary = statusBarNotification.getNotification().extras.getString("android.summaryText");
         infoText = statusBarNotification.getNotification().extras.getString("android.infoText");
-        // bigText = statusBarNotification.getNotification().extras.get(Notification.EXTRA_BIG_TEXT);
         category = statusBarNotification.getNotification().category;
         if (statusBarNotification.getNotification().extras.get(Notification.EXTRA_BIG_TEXT) != null) {
-            Log.i("qwert", statusBarNotification.getNotification().extras.get(Notification.EXTRA_BIG_TEXT).toString());
+            bigText = statusBarNotification.getNotification().extras.get(Notification.EXTRA_BIG_TEXT).toString();
         }
     }
 
@@ -56,6 +55,15 @@ public class NotificationString {
                 tbr = tbr  + ", ";
             }
             tbr = tbr + textline;
+        }
+        if (bigText != null && !bigText.equals(text) && !bigText.equals(textline) && !bigText.equals(title)) {
+            if (!tbr.equals("")) {
+                tbr = tbr  + ", ";
+            }
+            if(bigText.length() >= 40) {
+                bigText = bigText.substring(0,40) + "...";
+            }
+            tbr = tbr + bigText;
         }
         return tbr;
     }
