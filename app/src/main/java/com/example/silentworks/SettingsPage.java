@@ -65,14 +65,6 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
             }
         });
 
-        CheckBox checkGetDarkMode = (CheckBox)findViewById(R.id.checkGetDarkMode);
-        checkGetDarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-
-            }
-        });
-
         CheckBox checkAutoTextResponse = (CheckBox)findViewById(R.id.checkAutoTextResponse);
         checkAutoTextResponse.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
