@@ -1,5 +1,6 @@
 package com.example.silentworks;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -17,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.Serializable;
@@ -47,9 +49,15 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
+
         if(!isNotificationServiceEnabled()){
             enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
             enableNotificationListenerAlertDialog.show();
+        }
+
+        Intent intent = getIntent();
+        if(intent.getBooleanExtra("signOut", false) == true) {
+            signOut();
         }
     }
 
@@ -72,13 +80,22 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
             case R.id.sign_in_button:
                 signIn();
                 break;
-            // ...
         }
     }
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // ...
+                    }
+                });
     }
 
     @Override
