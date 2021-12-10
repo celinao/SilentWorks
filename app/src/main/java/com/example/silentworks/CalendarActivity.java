@@ -134,9 +134,18 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
 
             if(eventDay == dayOfMonth && eventMonthAsInt == month && eventYear == year) {
                 dayEvents.add(calendarEvents.get(i));
+                Log.v("EVENT", "year: " + String.valueOf(eventYear) + " " + "month: " + String.valueOf(eventMonthAsInt) + " " + "day: " + String.valueOf(eventDay));
+                setAlarms(calendarEvents.get(i));
             }
         }
         displayCalendarEvents(dayEvents);
+    }
+
+    private void setAlarms(Event event){
+        Log.v("Time",  "TIME" + event.getCalendarText());
+        // Call Alarms on Start & End Times
+        // Check if event has been turned on/off?
+        // Turn on/off based on Settings Page Standard/All/None.
     }
 
     @Override
@@ -276,6 +285,8 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 newView = new TextView(this);
                 newView.setText(events.get(idx).getCalendarText());
                 newView.setTextSize(20);
+                Log.v("EVENT message", "message: " + events.get(idx).getCalendarText());
+
 
                 // Switches background color so every other event
                 if (idx % 2 == 0) {
