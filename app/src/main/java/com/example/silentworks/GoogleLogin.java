@@ -59,6 +59,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         mGoogleSignInClient = com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(this, gso);
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        TextResponse autoTextResponse = new TextResponse();
     }
 
     @Override

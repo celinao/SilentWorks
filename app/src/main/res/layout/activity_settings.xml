@@ -107,15 +107,6 @@
       app:layout_constraintLeft_toLeftOf="@+id/checkGetNotifications"
       app:layout_constraintTop_toBottomOf="@+id/checkGetNotifications" />
 
-  <CheckBox
-      android:id="@+id/checkGetDarkMode"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Dark Mode"
-      app:layout_constraintLeft_toLeftOf="@+id/checkGetNotifications"
-      app:layout_constraintTop_toBottomOf="@+id/checkAutoTextResponse" />
-
-
   <Button
       android:id="@+id/logOut"
       android:text="Log Out"
@@ -125,7 +116,7 @@
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintTop_toBottomOf="@+id/checkGetDarkMode"
+      app:layout_constraintTop_toBottomOf="@+id/checkAutoTextResponse"
       />
 
 

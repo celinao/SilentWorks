@@ -20,12 +20,12 @@ public class SettingsPage extends OptionsMenu{
     private NumberPicker hourPicker;
     private NumberPicker minPicker;
     private String[] pickerVals;
-
+    public static int textResponse;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_settings);
         super.onCreate(savedInstanceState);
-
+        textResponse = 0;
         Spinner dropdown = findViewById(R.id.modeSelectionSpinner);
         String[] items = new String[]{"Standard", "Stop All Notifications", "Stop Muting Notifications"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
@@ -66,23 +66,12 @@ public class SettingsPage extends OptionsMenu{
             }
         });
 
-        CheckBox checkGetDarkMode = (CheckBox)findViewById(R.id.checkGetDarkMode);
-        checkGetDarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-
-            }
-        });
-        TextResponse autoTextResponse = new TextResponse();
         CheckBox checkAutoTextResponse = (CheckBox)findViewById(R.id.checkAutoTextResponse);
-        checkAutoTextResponse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(isChecked) {
-                    autoTextResponse.setTextResponse(1);
-                } else {
-                    autoTextResponse.setTextResponse(0);
-                }
+        checkAutoTextResponse.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                textResponse = 1;
+            } else {
+                textResponse = 0;
             }
         });
     }
