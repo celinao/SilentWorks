@@ -2,11 +2,14 @@ package com.example.silentworks;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -37,6 +40,23 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        int permissionReadPhone = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_PHONE_STATE);
+        int permissionWriteEx = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permissionReadEx = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionSendSMS = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.SEND_SMS);
+        int permissionReceiveSMS = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.RECEIVE_SMS);
+        int permissionReadContacts = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_CONTACTS);
+        if(permissionReadPhone == PackageManager.PERMISSION_DENIED && permissionWriteEx == PackageManager.PERMISSION_DENIED &&
+                permissionReadEx == PackageManager.PERMISSION_DENIED && permissionSendSMS == PackageManager.PERMISSION_DENIED &&
+                permissionReceiveSMS == PackageManager.PERMISSION_DENIED && permissionReadContacts == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.SEND_SMS,
+                    Manifest.permission.RECEIVE_SMS,
+                    Manifest.permission.READ_CONTACTS}, 1); }
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile

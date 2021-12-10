@@ -36,6 +36,7 @@ import java.util.Calendar;
 
 public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelectedListener{
 
+    public static int textResponse;
     private NotificationManager mNotificationManager;
     private PendingIntent p1;
     String[] items;
@@ -49,6 +50,7 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         //Creates dropdown menu
+        textResponse = 0;
         Spinner dropdown = findViewById(R.id.modeSelectionSpinner);
         items = new String[]{"Standard", "Stop All Notifications", "Stop Muting Notifications"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
@@ -71,16 +73,12 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
             }
         });
 
-        TextResponse autoTextResponse = new TextResponse();
         CheckBox checkAutoTextResponse = (CheckBox)findViewById(R.id.checkAutoTextResponse);
-        checkAutoTextResponse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(isChecked) {
-                    autoTextResponse.setTextResponse(1);
-                } else {
-                    autoTextResponse.setTextResponse(0);
-                }
+        checkAutoTextResponse.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                textResponse = 1;
+            } else {
+                textResponse = 0;
             }
         });
     }
