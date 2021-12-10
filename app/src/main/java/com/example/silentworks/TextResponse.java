@@ -30,7 +30,7 @@ public class TextResponse extends BroadcastReceiver {
             String phoneNumber = messages[0].getOriginatingAddress();
             if (bundle != null) {
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNumber, null, "Sorry, but I'm busy", null, null);
+                smsManager.sendTextMessage(phoneNumber, null, "Sorry, I'm busy", null, null);
             }
         }
     }
