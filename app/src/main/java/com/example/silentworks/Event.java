@@ -1,14 +1,9 @@
 package com.example.silentworks;
 
-<<<<<<< HEAD
 /**
  * This object stores all the needed information for each event, which include date, time, title,
  * and description
  */
-=======
-import static java.lang.Integer.parseInt;
-
->>>>>>> 9420b52e42a111e08adbbf74b7c435c3acbca278
 public class Event {
 
     private String username;
@@ -42,37 +37,35 @@ public class Event {
         return (title + "\n" + startHour + ":" + startMin + "-" + endHour + ":" + endMin);
     }
 
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
 
     public String getDate() {
         return date;
     }
 
-    public int getStartHour() {
-        return parseInt(startHour);
+    public String getStartHour() {
+        return startHour;
     }
 
-    public int getStartMin() {
-        return parseInt(startMin);
+    public String getStartMin() {
+        return startMin;
     }
 
-    public int getEndHour() {
-        return parseInt(endHour);
+    public String getEndHour() {
+        return endHour;
     }
 
-    public int getEndMin() {
-        return parseInt(endMin);
-    }
-
-    public boolean checkSilenced(){
-        return silence;
+    public String getEndMin() {
+        return endMin;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public int getID(){
-        return(parseInt(startHour+startMin+endHour+endMin));
+    public String getDescription() {
+        return description;
     }
 }
