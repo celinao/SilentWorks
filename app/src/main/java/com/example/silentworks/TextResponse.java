@@ -14,6 +14,7 @@ public class TextResponse extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        // If sms text is received
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED") && SettingsPage.textResponse==1) {
             Bundle bundle = intent.getExtras();
             Object[] pdus = (Object[]) bundle.get("pdus");
