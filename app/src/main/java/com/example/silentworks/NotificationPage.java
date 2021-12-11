@@ -14,7 +14,6 @@ public class NotificationPage extends OptionsMenu {
     private LinearLayout linearLayout;
     private String[] notifications = new String[NotificationList.Notifications.size()];
 
-    //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +25,7 @@ public class NotificationPage extends OptionsMenu {
         for (int i = 0; i < NotificationList.Notifications.size(); ++i) {
             NotificationString ns = new NotificationString(NotificationList.Notifications.get(i));
             if (ns.getString() != "") {
+                // check for duplicates, and ignore the same notifications
                 if (count > 0) {
                     marker = 0;
                     for (int j = 0; j < count; ++j) {

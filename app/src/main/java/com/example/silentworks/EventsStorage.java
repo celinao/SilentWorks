@@ -6,6 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
+/**
+ * This class handles the SQLite database storage. The only thing that it stores is the events.
+ * It is capable of add and update events, and delete events based on the username. It can also put
+ * every event into an arraylist.
+ */
+
 public class EventsStorage {
 
     SQLiteDatabase sqLiteDatabase;
@@ -39,6 +45,7 @@ public class EventsStorage {
 
         ArrayList<Event> eventsList = new ArrayList<>();
 
+        // reads all the rows in the table and put every event into the arraylist
         while (!c.isAfterLast()) {
 
             String sHour = c.getString(sHourIndex);
@@ -77,6 +84,9 @@ public class EventsStorage {
                 silence, title, username));
     }
 
+    /**
+     * Deletes all the events that's under one username, called when the user switches account
+     */
     public void deleteEvent(String username) {
         createTable();
         sqLiteDatabase.execSQL(String.format("DELETE FROM events WHERE username = '%s'", username));

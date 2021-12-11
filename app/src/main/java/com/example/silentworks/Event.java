@@ -1,5 +1,9 @@
 package com.example.silentworks;
 
+/**
+ * This object stores all the needed information for each event, which include date, time, title,
+ * and description
+ */
 public class Event {
 
     private String username;

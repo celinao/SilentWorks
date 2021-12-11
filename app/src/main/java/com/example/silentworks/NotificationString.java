@@ -7,7 +7,10 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-
+/**
+ * This class turns a notification into a string, with the information stored in the notifictaion that
+ * may be useful
+ */
 public class NotificationString {
 
     String title;
@@ -20,9 +23,9 @@ public class NotificationString {
     String category;
     String bigText;
 
-    //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public NotificationString (StatusBarNotification statusBarNotification) {
+        // collects all the information that may be useful
         title = statusBarNotification.getNotification().extras.getString("android.title");
         titleBig = statusBarNotification.getNotification().extras.getString("android.title.big");
         text = statusBarNotification.getNotification().extras.getString("android.text");
@@ -37,6 +40,7 @@ public class NotificationString {
     }
 
     public String getString() {
+        // arrange the information
         String tbr = "";
         if (category != null) {
             tbr = tbr + category + ": ";

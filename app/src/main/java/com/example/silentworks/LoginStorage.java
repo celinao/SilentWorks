@@ -3,6 +3,10 @@ package com.example.silentworks;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * This class handles sharedPreference storage. The only thing is stores is user information. Used mainly
+ * in off-line mode.
+ */
 public class LoginStorage {
 
     private final String usernameKey = "username";
@@ -12,17 +16,6 @@ public class LoginStorage {
     public LoginStorage (Context context){
 
         sharedPreferences = context.getSharedPreferences("SilentWorksLogin", Context.MODE_PRIVATE);
-        /**
-        if (sharedPreferences.getString(usernameKey, "").equals("") &&
-                sharedPreferences.getString(passwordKey, "").equals("")) {
-            if (username != null && password != null) {
-                sharedPreferences.edit().putString(usernameKey, username).apply();
-                sharedPreferences.edit().putString(passwordKey, password).apply();
-            } else {
-                throw new Exception("Error");
-            }
-        }
-         */
 
     }
 
