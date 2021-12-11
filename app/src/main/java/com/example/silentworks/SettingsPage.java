@@ -39,7 +39,8 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
 
     private NotificationManager mNotificationManager;
     private PendingIntent p1;
-    String[] items;
+    private String[] items;
+    public boolean standardON = true;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -85,6 +86,7 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
         TimePicker timePicker;
 
         if (position > 0){
+            standardON = false;
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
             if(linearLayout.getChildCount() < 9){
 
@@ -137,6 +139,8 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
                     a.set(AlarmManager.RTC, calendar.getTimeInMillis(), p1);
                 }
             });
+        }else{
+            standardON = true;
         }
     }
 

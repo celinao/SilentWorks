@@ -1,7 +1,11 @@
 package com.example.silentworks;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -35,6 +39,10 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     private static final int PERMISSIONS_REQUEST_READ_AND_WRITE_CALENDAR = 12;
     private static final int PERMISSIONS_REQUEST_WRITE_CALENDAR = 13;
     private long calendarId = 3;
+    private Calendar calendar;
+    private AlarmManager alarmManager;
+    private NotificationManager mNotificationManager;
+
     // Projection array. Creating indices for this array instead of doing
 // dynamic lookups improves performance.
     public static final String[] CALENDAR_PROJECTION = new String[] {
@@ -85,7 +93,6 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
 
     private void displayDayEvents(CalendarView view, int year, int month, int dayOfMonth) {
         // write code to change the displayed events based on this.
-        Log.v("date", "year: " + String.valueOf(year) + " " + "month: " + String.valueOf(month) + " " + "day: " + String.valueOf(dayOfMonth));
         ArrayList<Event> dayEvents = new ArrayList<Event>();
         for(int i = 0; i < calendarEvents.size(); i++) {
             int eventDay = Integer.parseInt(calendarEvents.get(i).getDate().substring(8,10));
@@ -134,7 +141,8 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
 
             if(eventDay == dayOfMonth && eventMonthAsInt == month && eventYear == year) {
                 dayEvents.add(calendarEvents.get(i));
-                Log.v("EVENT", "year: " + String.valueOf(eventYear) + " " + "month: " + String.valueOf(eventMonthAsInt) + " " + "day: " + String.valueOf(eventDay));
+                mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 setAlarms(calendarEvents.get(i));
             }
         }
@@ -142,10 +150,27 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     }
 
     private void setAlarms(Event event){
-        Log.v("Time",  "TIME" + event.getCalendarText());
-        // Call Alarms on Start & End Times
-        // Check if event has been turned on/off?
-        // Turn on/off based on Settings Page Standard/All/None.
+        long time;
+        SettingsPage sp = new SettingsPage();
+        if(!event.checkSilenced() & sp.standardON){
+            // Turn ON DND
+            calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, event.getStartHour());
+            calendar.set(Calendar.MINUTE, event.getStartMin());
+            calendar.set(Calendar.SECOND, 0);
+
+            Intent intent = new Intent(CalendarActivity.this, TurnOnDND.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), event.getID(), intent, 0);
+            alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+
+            // Turn off DND
+            calendar.set(Calendar.HOUR_OF_DAY, event.getEndHour());
+            calendar.set(Calendar.MINUTE, event.getEndMin());
+
+            Intent intent2 = new Intent(CalendarActivity.this, TurnOffDND.class);
+            PendingIntent pendingIntent2 = PendingIntent.getBroadcast(getApplicationContext(), event.getID()+1, intent2, 0);
+            alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent2);
+        }
     }
 
     @Override
@@ -212,9 +237,6 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 if(displayName.equals(accountName)){
                     calendarId = calID;
                 }
-
-                Log.v("Calendar values", String.valueOf(calID) + String.valueOf(displayName) +
-                        String.valueOf(accountName) + String.valueOf(ownerName));
             }
 
             // Get new uri to query the events table
@@ -242,9 +264,6 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 Date startDate = new Date(startTime);
                 Date endDate = new Date(endTime);
 
-                Log.v("Events", String.valueOf(title) + String.valueOf(description)
-                        + String.valueOf(startTime) + String.valueOf(endTime));
-
                 // Format date for UI
                 SimpleDateFormat formatterHour = new SimpleDateFormat("HH");
                 SimpleDateFormat formatterMin = new SimpleDateFormat("mm");
@@ -267,9 +286,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 }
                 eventsStorage.saveEvent(username, startDate.toString(), formatterHour.format(startDate),
                         formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), titlePass, descriptionPass, "false");
-
             }
-            //displayCalendarEvents(calendarEvents);
         }
     }
 
@@ -285,8 +302,6 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                 newView = new TextView(this);
                 newView.setText(events.get(idx).getCalendarText());
                 newView.setTextSize(20);
-                Log.v("EVENT message", "message: " + events.get(idx).getCalendarText());
-
 
                 // Switches background color so every other event
                 if (idx % 2 == 0) {

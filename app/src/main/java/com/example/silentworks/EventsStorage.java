@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class EventsStorage {
 
     SQLiteDatabase sqLiteDatabase;
+    private boolean standardON;
 
     public EventsStorage(Context context) {
         sqLiteDatabase = context.openOrCreateDatabase("SWE", Context.MODE_PRIVATE, null);

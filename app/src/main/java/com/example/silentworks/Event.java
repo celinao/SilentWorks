@@ -1,5 +1,7 @@
 package com.example.silentworks;
 
+import static java.lang.Integer.parseInt;
+
 public class Event {
 
     private String username;
@@ -33,35 +35,37 @@ public class Event {
         return (title + "\n" + startHour + ":" + startMin + "-" + endHour + ":" + endMin);
     }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
 
     public String getDate() {
         return date;
     }
 
-    public String getStartHour() {
-        return startHour;
+    public int getStartHour() {
+        return parseInt(startHour);
     }
 
-    public String getStartMin() {
-        return startMin;
+    public int getStartMin() {
+        return parseInt(startMin);
     }
 
-    public String getEndHour() {
-        return endHour;
+    public int getEndHour() {
+        return parseInt(endHour);
     }
 
-    public String getEndMin() {
-        return endMin;
+    public int getEndMin() {
+        return parseInt(endMin);
+    }
+
+    public boolean checkSilenced(){
+        return silence;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getDescription() {
-        return description;
+    public int getID(){
+        return(parseInt(startHour+startMin+endHour+endMin));
     }
 }
