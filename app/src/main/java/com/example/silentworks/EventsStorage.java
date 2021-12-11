@@ -93,6 +93,10 @@ public class EventsStorage {
         //sqLiteDatabase.delete("SWE", null, null);
     }
 
+    public void closeDatabase() {
+        sqLiteDatabase.close();
+    }
+
 
 
 }

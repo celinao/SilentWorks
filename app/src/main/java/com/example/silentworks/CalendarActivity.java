@@ -2,6 +2,7 @@ package com.example.silentworks;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -172,111 +173,115 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     private void searchCalendarTable() {
 
         // off-line mode getting the events from the storage if any
-        if (isNetworkAvailable()) {
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (!mWifi.isConnected()) {
             LoginStorage loginStorage = new LoginStorage(getApplicationContext());
             String username = loginStorage.getUsername();
             if (!username.equals("")) {
                 EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
                 calendarEvents = eventsStorage.readNote(username);
             }
-        }
-
-        int permission = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
-                Manifest.permission.READ_CALENDAR);
-        int permissionTwo = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
-                Manifest.permission.WRITE_CALENDAR);
-        if(permission == PackageManager.PERMISSION_DENIED && permissionTwo == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR},
-                    PERMISSIONS_REQUEST_READ_AND_WRITE_CALENDAR);
         } else {
-            // Run query
-            Cursor cur = null;
-            ContentResolver cr = getContentResolver();
-            Uri uri = CalendarContract.Calendars.CONTENT_URI;
-            String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
-                    + CalendarContract.Calendars.ACCOUNT_TYPE + " = ? ))";
-            String[] selectionArgs = new String[] {account.getEmail(), "com.google"};
-            try {
-                // Submit the query and get a Cursor object back
-                cur = cr.query(uri, CALENDAR_PROJECTION, selection, selectionArgs, null);
-            } catch (Exception e) {
-                Log.e("Query failed", e.getLocalizedMessage());
-            }
-            // Use the cursor to step through the returned records
-            while (cur.moveToNext()) {
-                long calID = 0;
-                String displayName = null;
-                String accountName = null;
-                String ownerName = null;
 
-                // Get the field values
-                calID = cur.getLong(PROJECTION_ID_INDEX);
-                displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
-                accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
-                ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
+            int permission = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
+                    Manifest.permission.READ_CALENDAR);
+            int permissionTwo = ActivityCompat.checkSelfPermission(this.getApplicationContext(),
+                    Manifest.permission.WRITE_CALENDAR);
+            if (permission == PackageManager.PERMISSION_DENIED && permissionTwo == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR},
+                        PERMISSIONS_REQUEST_READ_AND_WRITE_CALENDAR);
+            } else {
+                // Run query
+                Cursor cur = null;
+                ContentResolver cr = getContentResolver();
+                Uri uri = CalendarContract.Calendars.CONTENT_URI;
+                String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
+                        + CalendarContract.Calendars.ACCOUNT_TYPE + " = ? ))";
+                String[] selectionArgs = new String[]{account.getEmail(), "com.google"};
+                try {
+                    // Submit the query and get a Cursor object back
+                    cur = cr.query(uri, CALENDAR_PROJECTION, selection, selectionArgs, null);
+                } catch (Exception e) {
+                    Log.e("Query failed", e.getLocalizedMessage());
+                }
+                // Use the cursor to step through the returned records
+                while (cur.moveToNext()) {
+                    long calID = 0;
+                    String displayName = null;
+                    String accountName = null;
+                    String ownerName = null;
 
-                if(displayName.equals(accountName)){
-                    calendarId = calID;
+                    // Get the field values
+                    calID = cur.getLong(PROJECTION_ID_INDEX);
+                    displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
+                    accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
+                    ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
+
+                    if (displayName.equals(accountName)) {
+                        calendarId = calID;
+                    }
+
+                    Log.v("Calendar values", String.valueOf(calID) + String.valueOf(displayName) +
+                            String.valueOf(accountName) + String.valueOf(ownerName));
                 }
 
-                Log.v("Calendar values", String.valueOf(calID) + String.valueOf(displayName) +
-                        String.valueOf(accountName) + String.valueOf(ownerName));
-            }
+                // Get new uri to query the events table
+                Uri eventsUri = CalendarContract.Events.CONTENT_URI;
+                cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
 
-            // Get new uri to query the events table
-            Uri eventsUri = CalendarContract.Events.CONTENT_URI;
-            cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
+                // Storing the login info to local and start SQLite
+                String username = account.getEmail();
+                LoginStorage loginStorage = new LoginStorage(getApplicationContext());
+                loginStorage.setUsername(username);
+                EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
 
-            // Storing the login info to local and start SQLite
-            String username = account.getEmail();
-            LoginStorage loginStorage = new LoginStorage(getApplicationContext());
-            loginStorage.setUsername(username);
-            EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
+                calendarEvents.clear();
+                while (cur.moveToNext()) {
+                    String title = null;
+                    String description = null;
+                    long startTime;
+                    long endTime;
 
-            calendarEvents.clear();
-            while(cur.moveToNext()) {
-                String title = null;
-                String description = null;
-                long startTime;
-                long endTime;
+                    title = cur.getString(PROJECTION_TITLE_INDEX);
+                    description = cur.getString(PROJECTION_DESCRIPTION_NAME_INDEX);
+                    startTime = cur.getLong(PROJECTION_START_INDEX);
+                    endTime = cur.getLong(PROJECTION_END_INDEX);
 
-                title = cur.getString(PROJECTION_TITLE_INDEX);
-                description = cur.getString(PROJECTION_DESCRIPTION_NAME_INDEX);
-                startTime = cur.getLong(PROJECTION_START_INDEX);
-                endTime = cur.getLong(PROJECTION_END_INDEX);
+                    Date startDate = new Date(startTime);
+                    Date endDate = new Date(endTime);
 
-                Date startDate = new Date(startTime);
-                Date endDate = new Date(endTime);
+                    Log.v("Events", String.valueOf(title) + String.valueOf(description)
+                            + String.valueOf(startTime) + String.valueOf(endTime));
 
-                Log.v("Events", String.valueOf(title) + String.valueOf(description)
-                        + String.valueOf(startTime) + String.valueOf(endTime));
+                    // Format date for UI
+                    SimpleDateFormat formatterHour = new SimpleDateFormat("HH");
+                    SimpleDateFormat formatterMin = new SimpleDateFormat("mm");
 
-                // Format date for UI
-                SimpleDateFormat formatterHour = new SimpleDateFormat("HH");
-                SimpleDateFormat formatterMin = new SimpleDateFormat("mm");
+                    // Create an event to be added to the ArrayList
+                    Event tempEvent = new Event(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
+                            formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
 
-                // Create an event to be added to the ArrayList
-                Event tempEvent = new Event(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
-                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
+                    calendarEvents.add(tempEvent);
 
-                calendarEvents.add(tempEvent);
+                    // store the events into SQLite for off-line
+                    eventsStorage.deleteEvent(username);
+                    String titlePass = title;
+                    if (title.contains("'")) {
+                        titlePass = title.replace("'", "");
+                    }
+                    String descriptionPass = description;
+                    if (description.contains("'")) {
+                        descriptionPass = description.replace("'", "");
+                    }
+                    eventsStorage.saveEvent(username, startDate.toString(), formatterHour.format(startDate),
+                            formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), titlePass, descriptionPass, "false");
 
-                // store the events into SQLite for off-line
-                eventsStorage.deleteEvent(username);
-                String titlePass = title;
-                if (title.contains("'")) {
-                    titlePass = title.replace("'","");
                 }
-                String descriptionPass = description;
-                if (description.contains("'")) {
-                    descriptionPass = description.replace("'","");
-                }
-                eventsStorage.saveEvent(username, startDate.toString(), formatterHour.format(startDate),
-                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), titlePass, descriptionPass, "false");
-
+                eventsStorage.closeDatabase();
+                //displayCalendarEvents(calendarEvents);
             }
-            //displayCalendarEvents(calendarEvents);
         }
     }
 
