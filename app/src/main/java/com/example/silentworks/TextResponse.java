@@ -4,18 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.Toast;
 
 
 public class TextResponse extends BroadcastReceiver {
-
-    private Context context;
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,7 +24,7 @@ public class TextResponse extends BroadcastReceiver {
             String phoneNumber = messages[0].getOriginatingAddress();
             if (bundle != null) {
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNumber, null, "Sorry, I'm busy", null, null);
+                smsManager.sendTextMessage(phoneNumber, null, "This is an automated reply: Sorry, I'm busy, I will see your text later", null, null);
             }
         }
     }
