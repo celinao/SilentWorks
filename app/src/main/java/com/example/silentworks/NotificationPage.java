@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,18 +21,26 @@ public class NotificationPage extends OptionsMenu {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_page);
 
-        // notifications = new String[]{
-        //        "Email: Hi there person",
-        //        "Text: Hi there again",
-        //        "GroupMe: When are we meeting again?"
-        //};
-
         int count = 0;
+        int marker;
         for (int i = 0; i < NotificationList.Notifications.size(); ++i) {
             NotificationString ns = new NotificationString(NotificationList.Notifications.get(i));
             if (ns.getString() != "") {
-                notifications[count] = ns.getString();
-                count = count + 1;
+                if (count > 0) {
+                    marker = 0;
+                    for (int j = 0; j < count; ++j) {
+                        if (ns.getString().equals(notifications[j])) {
+                            marker = 1;
+                        }
+                    }
+                    if (marker == 0) {
+                        notifications[count] = ns.getString();
+                        count = count + 1;
+                    }
+                } else {
+                    notifications[count] = ns.getString();
+                    count = count + 1;
+                }
             }
         }
 
