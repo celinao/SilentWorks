@@ -76,7 +76,14 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         Intent intent = getIntent();
-        account = intent.getParcelableExtra("account");
+
+        GoogleSignInAccount checkAccount = com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(this);
+        if(checkAccount != null) {
+            account = checkAccount;
+        } else {
+            account = intent.getParcelableExtra("account");
+        }
+
         calendarEvents = new ArrayList<Event>();
         viewList = new ArrayList<View>();
         calendarView = (CalendarView) findViewById(R.id.calendarView);
@@ -213,7 +220,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
             ContentResolver cr = getContentResolver();
             Uri uri = CalendarContract.Calendars.CONTENT_URI;
             String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
-                                    + CalendarContract.Calendars.ACCOUNT_TYPE + " = ? ))";
+                    + CalendarContract.Calendars.ACCOUNT_TYPE + " = ? ))";
             String[] selectionArgs = new String[] {account.getEmail(), "com.google"};
             try {
                 // Submit the query and get a Cursor object back
@@ -297,21 +304,21 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
             linearLayout.removeView(viewList.get(i));
         }
         viewList.clear();
-            // Adds each element in the CalendarEvent's array to the display
-            for(int idx = 0; idx < events.size(); idx++) {
-                newView = new TextView(this);
-                newView.setText(events.get(idx).getCalendarText());
-                newView.setTextSize(20);
+        // Adds each element in the CalendarEvent's array to the display
+        for(int idx = 0; idx < events.size(); idx++) {
+            newView = new TextView(this);
+            newView.setText(events.get(idx).getCalendarText());
+            newView.setTextSize(20);
 
-                // Switches background color so every other event
-                if (idx % 2 == 0) {
-                    newView.setBackgroundResource(R.drawable.calendar_color1);
-                } else {
-                    newView.setBackgroundResource(R.drawable.calendar_color2);
-                }
-                linearLayout.addView(newView);
-                viewList.add(newView);
+            // Switches background color so every other event
+            if (idx % 2 == 0) {
+                newView.setBackgroundResource(R.drawable.calendar_color1);
+            } else {
+                newView.setBackgroundResource(R.drawable.calendar_color2);
             }
+            linearLayout.addView(newView);
+            viewList.add(newView);
+        }
     }
 
     @Override
@@ -329,7 +336,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    
+
     public void addEvent(View v) {
         Calendar beginTime = Calendar.getInstance();
         beginTime.set(2021, 10, 24, 7, 30);

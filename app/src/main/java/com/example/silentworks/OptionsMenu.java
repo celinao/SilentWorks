@@ -29,7 +29,9 @@ public class OptionsMenu extends AppCompatActivity {
                 startActivity(new Intent(this, HelpPage.class));
                 return true;
             case R.id.main:
-                startActivity(new Intent(this, MainPage.class));
+                Intent intent = new Intent(this, GoogleLogin.class);
+                intent.putExtra("signOut", true);
+                startActivity(intent);
                 return true;
             case R.id.notifications:
                 startActivity(new Intent(this, NotificationPage.class));

@@ -1,11 +1,15 @@
 package com.example.silentworks;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -17,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.Serializable;
@@ -36,6 +41,23 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        int permissionReadPhone = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_PHONE_STATE);
+        int permissionWriteEx = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permissionReadEx = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionSendSMS = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.SEND_SMS);
+        int permissionReceiveSMS = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.RECEIVE_SMS);
+        int permissionReadContacts = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_CONTACTS);
+        if(permissionReadPhone == PackageManager.PERMISSION_DENIED && permissionWriteEx == PackageManager.PERMISSION_DENIED &&
+                permissionReadEx == PackageManager.PERMISSION_DENIED && permissionSendSMS == PackageManager.PERMISSION_DENIED &&
+                permissionReceiveSMS == PackageManager.PERMISSION_DENIED && permissionReadContacts == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.SEND_SMS,
+                    Manifest.permission.RECEIVE_SMS,
+                    Manifest.permission.READ_CONTACTS}, 1); }
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -47,9 +69,15 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
+
         if(!isNotificationServiceEnabled()){
             enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
             enableNotificationListenerAlertDialog.show();
+        }
+
+        Intent intent = getIntent();
+        if(intent.getBooleanExtra("signOut", false) == true) {
+            signOut();
         }
     }
 
@@ -72,13 +100,22 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
             case R.id.sign_in_button:
                 signIn();
                 break;
-            // ...
         }
     }
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // ...
+                    }
+                });
     }
 
     @Override

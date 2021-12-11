@@ -13,8 +13,4 @@ public class HelpPage extends OptionsMenu {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help_page);
     }
-
-    public void toHome(View view) {
-        startActivity(new Intent(this, MainPage.class));
-    }
 }
