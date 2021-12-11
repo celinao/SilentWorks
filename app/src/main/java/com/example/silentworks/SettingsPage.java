@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -39,7 +40,8 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
     public static int textResponse;
     private NotificationManager mNotificationManager;
     private PendingIntent p1;
-    String[] items;
+    private String[] items;
+    public boolean standardON = true;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -78,67 +80,70 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
-        //3. Remove Positions Button and add it to the start of the app upon open.
+        ToggleButton startTimer;
+        TimePicker timePicker;
+
         if (position > 0){
+            standardON = false;
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
-            TimePicker timePicker = new TimePicker(getApplicationContext());
-            timePicker.setIs24HourView(true);
-            linearLayout.addView(timePicker, 2);
+            if(linearLayout.getChildCount() < 9){
+
+                timePicker = new TimePicker(getApplicationContext());
+
+                // Create a notification manager and a toggle button
+                startTimer = new ToggleButton(getApplicationContext());
+                startTimer.setText("Start");
+                startTimer.setTextOff("Start");
+                startTimer.setTextOn("Cancel");
+
+                // Adding timePicker and toggle button to linear layout
+                linearLayout.addView(timePicker, 2);
+                linearLayout.addView(startTimer, 3);
+            }else{
+                // Getting previously added timePicker and toggle button
+                timePicker = (TimePicker) linearLayout.getChildAt(2);
+                startTimer = (ToggleButton) linearLayout.getChildAt(3);
+            }
 
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-            calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-            long time = (calendar.getTimeInMillis() - (calendar.getTimeInMillis() % 60000));
-
             mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-            ToggleButton startTimer = new ToggleButton(getApplicationContext());
-            startTimer.setText("Start");
-            startTimer.setTextOff("Start");
-            startTimer.setTextOn("Cancel");
             AlarmManager a = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-            if (position == 1){
-                // Stop All Notifications
-                long finalTime = time;
-                startTimer.setOnClickListener(v -> {
-                    if(!startTimer.isChecked()){
-                        a.cancel(p1);
-                    }else {
+            startTimer.setOnClickListener(v -> {
+                if(!startTimer.isChecked()){
+                    a.cancel(p1);
+                }else {
+                    // getting time from TimePicker
+                    calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+                    calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+
+                    //Creating intents based on settings type
+                    Intent intent;
+                    if (position == 1){
                         if (mNotificationManager.isNotificationPolicyAccessGranted()) {
                             mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
                         }
-                        Intent intent = new Intent(SettingsPage.this, TurnOffDND.class);
-                        p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                        a.set(AlarmManager.RTC, calendar.getTimeInMillis(), p1);
-                    }
-                });
-            }else{
-                // Stop Muting Notifications
-                long finalTime = time;
-                startTimer.setOnClickListener(v -> {
-                    if(!startTimer.isChecked()){
-                        a.cancel(p1);
-                    }else {
+                        intent = new Intent(SettingsPage.this, TurnOffDND.class);
+                    }else{
                         if (mNotificationManager.isNotificationPolicyAccessGranted()) {
                             mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
                         }
-
-                        Intent intent = new Intent(SettingsPage.this, TurnOnDND.class);
-                        p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                        a.set(AlarmManager.RTC, calendar.getTimeInMillis(), p1);
+                        intent = new Intent(SettingsPage.this, TurnOnDND.class);
                     }
-                });
-            }
 
-            linearLayout.addView(startTimer, 3);
+                    p1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+                    a.set(AlarmManager.RTC, calendar.getTimeInMillis(), p1);
+                }
+            });
+        }else{
+            standardON = true;
         }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-
-    }
-
+    public void onNothingSelected(AdapterView<?> arg0) {}
 
     public void logOut(View view){
         startActivity(new Intent(this, MainPage.class));
