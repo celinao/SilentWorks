@@ -22,13 +22,28 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        NotificationList.Notifications.add(sbn);
+        if ((sbn.getNotification().flags & sbn.getNotification().FLAG_GROUP_SUMMARY) != 0) {
+
+        } else {
+            NotificationList.Notifications.add(sbn);
+        }
         super.onNotificationPosted(sbn);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        NotificationList.Notifications.removeAll(NotificationList.Notifications);
+        //NotificationList.Notifications.removeAll(NotificationList.Notifications);
+        int len = NotificationList.Notifications.size();
+        for (int i = 0; i < len; ++i) {
+            NotificationString notif = new NotificationString(NotificationList.Notifications.get(i));
+            NotificationString notifRemove = new NotificationString(sbn);
+            if (notif.getString().equals(notifRemove.getString())) {
+                NotificationList.Notifications.remove(i);
+                --i;
+                --len;
+            }
+        }
         super.onNotificationRemoved(sbn);
     }
 
@@ -37,7 +52,11 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerConnected() {
         StatusBarNotification[] sb = getActiveNotifications();
         for (StatusBarNotification d : sb) {
-            NotificationList.Notifications.add(d);
+            if ((d.getNotification().flags & d.getNotification().FLAG_GROUP_SUMMARY) != 0) {
+
+            } else {
+                NotificationList.Notifications.add(d);
+            }
         }
         super.onListenerConnected();
 
