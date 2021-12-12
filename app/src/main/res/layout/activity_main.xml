@@ -43,17 +43,5 @@
         app:layout_constraintTop_toBottomOf="@id/SWLogoImage"
         app:layout_constraintVertical_bias="0.21" />
 
-    <Button
-        android:id="@+id/outlookButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="153dp"
-        android:text="Outlook Login"
-        android:onClick="toGoogleLogin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
-        app:layout_constraintVertical_bias="0.024" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
