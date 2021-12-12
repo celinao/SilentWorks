@@ -220,61 +220,60 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                     calendarId = calID;
                 }
 
-                Log.v("Calendar values", String.valueOf(calID) + String.valueOf(displayName) +
-                        String.valueOf(accountName) + String.valueOf(ownerName));
-            }
+                // Get new uri to query the events table
+                Uri eventsUri = CalendarContract.Events.CONTENT_URI;
+                cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
 
-            // Get new uri to query the events table
-            Uri eventsUri = CalendarContract.Events.CONTENT_URI;
-            cur = cr.query(eventsUri, EVENT_PROJECTION, "", null, null);
+                // Storing the login info to local and start SQLite
+                String username = account.getEmail();
+                LoginStorage loginStorage = new LoginStorage(getApplicationContext());
+                loginStorage.setUsername(username);
+                EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
 
-            // Storing the login info to local and start SQLite
-            String username = account.getEmail();
-            LoginStorage loginStorage = new LoginStorage(getApplicationContext());
-            loginStorage.setUsername(username);
-            EventsStorage eventsStorage = new EventsStorage(getApplicationContext());
+                calendarEvents.clear();
+                while (cur.moveToNext()) {
+                    String title = null;
+                    String description = null;
+                    long startTime;
+                    long endTime;
 
-            calendarEvents.clear();
-            while(cur.moveToNext()) {
-                String title = null;
-                String description = null;
-                long startTime;
-                long endTime;
+                    title = cur.getString(PROJECTION_TITLE_INDEX);
+                    description = cur.getString(PROJECTION_DESCRIPTION_NAME_INDEX);
+                    startTime = cur.getLong(PROJECTION_START_INDEX);
+                    endTime = cur.getLong(PROJECTION_END_INDEX);
 
-                title = cur.getString(PROJECTION_TITLE_INDEX);
-                description = cur.getString(PROJECTION_DESCRIPTION_NAME_INDEX);
-                startTime = cur.getLong(PROJECTION_START_INDEX);
-                endTime = cur.getLong(PROJECTION_END_INDEX);
+                    Date startDate = new Date(startTime);
+                    Date endDate = new Date(endTime);
 
-                Date startDate = new Date(startTime);
-                Date endDate = new Date(endTime);
+                    Log.v("Events", String.valueOf(title) + String.valueOf(description)
+                            + String.valueOf(startTime) + String.valueOf(endTime));
 
-                Log.v("Events", String.valueOf(title) + String.valueOf(description)
-                        + String.valueOf(startTime) + String.valueOf(endTime));
+                    // Format date for UI
+                    SimpleDateFormat formatterHour = new SimpleDateFormat("HH");
+                    SimpleDateFormat formatterMin = new SimpleDateFormat("mm");
 
-                // Format date for UI
-                SimpleDateFormat formatterHour = new SimpleDateFormat("HH");
-                SimpleDateFormat formatterMin = new SimpleDateFormat("mm");
+                    // Create an event to be added to the ArrayList
+                    Event tempEvent = new Event(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
+                            formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
 
-                // Create an event to be added to the ArrayList
-                Event tempEvent = new Event(account.getEmail(), startDate.toString(), formatterHour.format(startDate),
-                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), title, description, "false");
+                    calendarEvents.add(tempEvent);
 
-                calendarEvents.add(tempEvent);
+                    // store the events into SQLite for off-line
+                    eventsStorage.deleteEvent(username);
+                    String titlePass = title;
+                    if (title.contains("'")) {
+                        titlePass = title.replace("'", "");
+                    }
+                    String descriptionPass = description;
+                    if (description.contains("'")) {
+                        descriptionPass = description.replace("'", "");
+                    }
+                    eventsStorage.saveEvent(username, startDate.toString(), formatterHour.format(startDate),
+                            formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), titlePass, descriptionPass, "false");
 
-                // store the events into SQLite for off-line
-                eventsStorage.deleteEvent(username);
-                String titlePass = title;
-                if (title.contains("'")) {
-                    titlePass = title.replace("'","");
                 }
-                String descriptionPass = description;
-                if (description.contains("'")) {
-                    descriptionPass = description.replace("'","");
-                }
-                eventsStorage.saveEvent(username, startDate.toString(), formatterHour.format(startDate),
-                        formatterMin.format(startDate), formatterHour.format(endDate), formatterMin.format(endDate), titlePass, descriptionPass, "false");
-
+                eventsStorage.closeDatabase();
+                //displayCalendarEvents(calendarEvents);
             }
             //displayCalendarEvents(calendarEvents);
         }
