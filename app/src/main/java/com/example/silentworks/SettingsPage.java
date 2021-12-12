@@ -59,14 +59,6 @@ public class SettingsPage extends OptionsMenu implements AdapterView.OnItemSelec
         dropdown.setAdapter(adapter);
         dropdown.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
 
-        CheckBox checkGetNotifications = (CheckBox)findViewById(R.id.checkGetNotifications);
-        checkGetNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-
-            }
-        });
-
         CheckBox checkAutoTextResponse = (CheckBox)findViewById(R.id.checkAutoTextResponse);
         checkAutoTextResponse.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
