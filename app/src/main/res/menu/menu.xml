@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/main"
-        android:title="Home"/>
+        android:title="Logout"/>
 
     <item
         android:id="@+id/calendar"
