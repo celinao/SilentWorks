@@ -1,18 +1,24 @@
 package com.example.silentworks;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 import android.view.View;
@@ -35,6 +41,9 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     private static final int PERMISSIONS_REQUEST_READ_AND_WRITE_CALENDAR = 12;
     private static final int PERMISSIONS_REQUEST_WRITE_CALENDAR = 13;
     private long calendarId = 3;
+    private Calendar calendar;
+    private AlarmManager alarmManager;
+    private NotificationManager mNotificationManager;
     // Projection array. Creating indices for this array instead of doing
 // dynamic lookups improves performance.
     public static final String[] CALENDAR_PROJECTION = new String[] {
@@ -63,6 +72,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     private LinearLayout linearLayout;
     private ArrayList<Event> calendarEvents;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,12 +159,30 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
     }
 
     private void setAlarms(Event event){
-        Log.v("Time",  "TIME" + event.getCalendarText());
-        // Call Alarms on Start & End Times
-        // Check if event has been turned on/off?
-        // Turn on/off based on Settings Page Standard/All/None.
+        long time;
+        SettingsPage sp = new SettingsPage();
+        if(!event.checkSilenced() & sp.standardON){
+            // Turn ON DND
+            calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, event.getStartHour());
+            calendar.set(Calendar.MINUTE, event.getStartMin());
+            calendar.set(Calendar.SECOND, 0);
+
+            Intent intent = new Intent(CalendarActivity.this, TurnOnDND.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), event.getID(), intent, 0);
+            alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+
+            // Turn off DND
+            calendar.set(Calendar.HOUR_OF_DAY, event.getEndHour());
+            calendar.set(Calendar.MINUTE, event.getEndMin());
+
+            Intent intent2 = new Intent(CalendarActivity.this, TurnOffDND.class);
+            PendingIntent pendingIntent2 = PendingIntent.getBroadcast(getApplicationContext(), event.getID()+1, intent2, 0);
+            alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent2);
+        }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onStart() {
         super.onStart();
@@ -169,6 +197,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         displayDayEvents(calendarView, Integer.parseInt(yearStr), Integer.parseInt(monthStr), Integer.parseInt(dayStr));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void searchCalendarTable() {
 
         // off-line mode getting the events from the storage if any
@@ -245,8 +274,8 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
                     Date startDate = new Date(startTime);
                     Date endDate = new Date(endTime);
 
-                    Log.v("Events", String.valueOf(title) + String.valueOf(description)
-                            + String.valueOf(startTime) + String.valueOf(endTime));
+                    mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                    alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
                     // Format date for UI
                     SimpleDateFormat formatterHour = new SimpleDateFormat("HH");
@@ -303,6 +332,7 @@ public class CalendarActivity extends OptionsMenu implements Serializable {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

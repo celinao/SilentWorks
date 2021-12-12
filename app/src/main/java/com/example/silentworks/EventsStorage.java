@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class EventsStorage {
 
+    private boolean standardON;
     SQLiteDatabase sqLiteDatabase;
 
     public EventsStorage(Context context) {
