@@ -1,6 +1,7 @@
 package com.example.silentworks;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.app.AlertDialog;
@@ -15,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -24,7 +26,8 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.Serializable;
 
-public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Serializable {
+public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Serializable
+{
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "Login";
     // Build a GoogleSignInClient with the options specified by gso
@@ -44,7 +47,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         int permissionSendSMS = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.SEND_SMS);
         int permissionReceiveSMS = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.RECEIVE_SMS);
         int permissionReadContacts = ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_CONTACTS);
-        if (permissionReadPhone == PackageManager.PERMISSION_DENIED && permissionWriteEx == PackageManager.PERMISSION_DENIED &&
+        if(permissionReadPhone == PackageManager.PERMISSION_DENIED && permissionWriteEx == PackageManager.PERMISSION_DENIED &&
                 permissionReadEx == PackageManager.PERMISSION_DENIED && permissionSendSMS == PackageManager.PERMISSION_DENIED &&
                 permissionReceiveSMS == PackageManager.PERMISSION_DENIED && permissionReadContacts == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{
@@ -53,8 +56,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.SEND_SMS,
                     Manifest.permission.RECEIVE_SMS,
-                    Manifest.permission.READ_CONTACTS}, 1);
-        }
+                    Manifest.permission.READ_CONTACTS}, 1); }
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile
@@ -68,15 +70,13 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
 
-        if (!isNotificationServiceEnabled()) {
+        if(!isNotificationServiceEnabled()){
             enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
             enableNotificationListenerAlertDialog.show();
         }
 
         Intent intent = getIntent();
-        // Checking to see if the user selected "Logout" in the menu, if they did
-        // log the user out
-        if (intent.getBooleanExtra("signOut", false) == true) {
+        if(intent.getBooleanExtra("signOut", false) == true) {
             signOut();
         }
     }
@@ -87,7 +87,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null
         GoogleSignInAccount account = com.google.android.gms.auth.api.signin.GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
+        if(account != null) {
             Intent intent = new Intent(this, CalendarActivity.class);
             intent.putExtra("account", account);
             startActivity(intent);
@@ -113,6 +113,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        // ...
                     }
                 });
     }
@@ -143,7 +144,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         }
     }
 
-    private boolean isNotificationServiceEnabled() {
+    private boolean isNotificationServiceEnabled(){
         String pkgName = getPackageName();
         final String flat = Settings.Secure.getString(getContentResolver(),
                 "enabled_notification_listeners");
@@ -161,7 +162,7 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
         return false;
     }
 
-    private AlertDialog buildNotificationServiceAlertDialog() {
+    private AlertDialog buildNotificationServiceAlertDialog(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("Allow us to access your notifications?");
         alertDialogBuilder.setPositiveButton("yes",
@@ -178,6 +179,6 @@ public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Se
                         alertDialogBuilder.setTitle("Come on, just allow us to access your notifications?");
                     }
                 });
-        return (alertDialogBuilder.create());
+        return(alertDialogBuilder.create());
     }
 }
