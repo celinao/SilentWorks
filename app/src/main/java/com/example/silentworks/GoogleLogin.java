@@ -26,7 +26,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.Serializable;
 
-public class GoogleLogin extends AppCompatActivity implements View.OnClickListener, Serializable
+public class GoogleLogin extends OptionsMenu implements View.OnClickListener, Serializable
 {
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "Login";
